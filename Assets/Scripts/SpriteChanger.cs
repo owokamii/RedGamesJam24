@@ -39,13 +39,10 @@ public class SpriteChanger : MonoBehaviour
         return -1;
     }
 
-
     void OnTriggerEnter2D(Collider2D other)
     {
-
         if (other.CompareTag("SpawnedObject"))
         {
-            //Debug.Log("Trigger entered by: " + other.gameObject.name);
             if (!activeCoroutines.ContainsKey(other.gameObject))
             {
                 Sprite[] spritesToChange = GetSpritesForObject(other.gameObject);
@@ -83,8 +80,19 @@ public class SpriteChanger : MonoBehaviour
             yield break;
         }
 
+        Pullable pullableComponent = obj.GetComponent<Pullable>();
+        if (pullableComponent == null)
+        {
+            yield break;
+        }
+
         for (int i = 0; i < spritesToChange.Length; i++)
         {
+            if (pullableComponent.isBeingDragged || pullableComponent.isMoving)
+            {
+                yield break;
+            }
+
             yield return new WaitForSeconds(2);
             spriteRenderer.sprite = spritesToChange[i];
         }
@@ -93,13 +101,35 @@ public class SpriteChanger : MonoBehaviour
         Debug.Log($"GetSpawnPointIndex returned {spawnPointIndex} for {obj.name}");
         if (spawnPointIndex != -1 && randomSpawner != null)
         {
-            Debug.Log("Resetting spawn point at index: " + spawnPointIndex);
-            randomSpawner.ResetSpawnPoint(spawnPointIndex);
+            for (float timer = 1f; timer > 0; timer -= Time.deltaTime)
+            {
+                if (pullableComponent.isBeingDragged || pullableComponent.isMoving)
+                {
+                    yield break;
+                }
+                yield return null;
+            }
+
+            if (!pullableComponent.isBeingDragged && !pullableComponent.isMoving)
+            {
+                Destroy(obj);
+                activeCoroutines.Remove(obj);
+            }
+
+            for (float timer = 2f; timer > 0; timer -= Time.deltaTime)
+            {
+                if (pullableComponent.isBeingDragged || pullableComponent.isMoving)
+                {
+                    yield break;
+                }
+                yield return null;
+            }
+
+            if (!pullableComponent.isBeingDragged && !pullableComponent.isMoving)
+            {
+                Debug.Log("Resetting spawn point at index: " + spawnPointIndex);
+                randomSpawner.ResetSpawnPoint(spawnPointIndex);
+            }
         }
-
-        yield return new WaitForSeconds(1);
-        Destroy(obj);
-
-        activeCoroutines.Remove(obj);
     }
 }

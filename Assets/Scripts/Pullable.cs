@@ -10,7 +10,8 @@ public class Pullable : MonoBehaviour
     private CapsuleCollider2D capsuleCollider;
     private Vector3 initialMousePosition;
     private Vector3 initialScale;
-    private bool isMoving;
+    public bool isMoving;
+    public bool isBeingDragged;
 
     private void Start()
     {
@@ -20,7 +21,7 @@ public class Pullable : MonoBehaviour
 
     private void Update()
     {
-        if(isMoving)
+        if (isMoving)
         {
             MoveObject();
 
@@ -35,13 +36,17 @@ public class Pullable : MonoBehaviour
     {
         initialScale = transform.localScale;
         initialMousePosition = Input.mousePosition;
+        isBeingDragged = true;
     }
+
     private void OnMouseDrag()
     {
         StretchObject();
     }
+
     private void OnMouseUp()
     {
+        isBeingDragged = false;
         ResetScale();
     }
 
@@ -55,13 +60,14 @@ public class Pullable : MonoBehaviour
         Vector3 currentMousePosition = Input.mousePosition;
         float distance = currentMousePosition.y - initialMousePosition.y;
 
-        if(distance > 0)
+        if (distance > 0)
         {
             float stretchFactor = distance / Screen.height;
             Vector3 newScale = new Vector3(initialScale.x, initialScale.y + stretchFactor, initialScale.z);
 
             transform.localScale = newScale;
 
+            // 完成拉伸
             if (newScale.y >= initialScale.y * maxStretchScale)
             {
                 isMoving = true;
@@ -78,7 +84,6 @@ public class Pullable : MonoBehaviour
 
     private void StopObject()
     {
-        //isMoving = false;
         ShrinkObject();
     }
 
