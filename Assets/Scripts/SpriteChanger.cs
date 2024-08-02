@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class SpriteChanger : MonoBehaviour
 {
-    public Sprite[] circleSprites;
-    public Sprite[] triangleSprites;
+    public Sprite[] plantSprites;
 
     private Dictionary<GameObject, Coroutine> activeCoroutines = new Dictionary<GameObject, Coroutine>();
     private RandomSpawner randomSpawner;
@@ -61,13 +60,9 @@ public class SpriteChanger : MonoBehaviour
 
     Sprite[] GetSpritesForObject(GameObject obj)
     {
-        if (obj.name.Contains("Circle"))
+        if (obj.name.Contains("Plant"))
         {
-            return circleSprites;
-        }
-        else if (obj.name.Contains("Triangle"))
-        {
-            return triangleSprites;
+            return plantSprites;
         }
         else
         {
