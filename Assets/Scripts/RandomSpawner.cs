@@ -69,9 +69,8 @@ public class RandomSpawner : MonoBehaviour
                 return prefabsToSpawnLevel2;
             case 3:
                 return prefabsToSpawnLevel3;
-            // 添加更多关卡的情况
             default:
-                return prefabsToSpawnLevel1; // 默认返回 Level 1 的生成对象
+                return prefabsToSpawnLevel1;
         }
     }
 

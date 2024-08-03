@@ -6,6 +6,7 @@ TagManager:
   tags:
   - SpawnedObject
   - Basket
+  - HeartObject
   layers:
   - Default
   - TransparentFX
