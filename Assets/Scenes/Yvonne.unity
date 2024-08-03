@@ -197,7 +197,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: New Text
+  m_text: timer
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1104,7 +1104,7 @@ SpriteRenderer:
   m_SortingLayerID: -1041935323
   m_SortingLayer: -4
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 57fc0fbd780531f418a903c9a5d9d042, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 87795affb26c5a348896457fa0c39080, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -2058,11 +2058,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 8464322547909503149, guid: 96873a43990925243bf3fa9a734f31a1, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.062
+      value: 0.46
       objectReference: {fileID: 0}
     - target: {fileID: 8464322547909503149, guid: 96873a43990925243bf3fa9a734f31a1, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.543
+      value: 1.65
       objectReference: {fileID: 0}
     - target: {fileID: 8464322547909503149, guid: 96873a43990925243bf3fa9a734f31a1, type: 3}
       propertyPath: m_LocalPosition.z
@@ -2074,15 +2074,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8464322547909503149, guid: 96873a43990925243bf3fa9a734f31a1, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8464322547909503149, guid: 96873a43990925243bf3fa9a734f31a1, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8464322547909503149, guid: 96873a43990925243bf3fa9a734f31a1, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8464322547909503149, guid: 96873a43990925243bf3fa9a734f31a1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
