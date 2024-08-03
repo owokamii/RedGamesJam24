@@ -7,10 +7,8 @@ using System;
 public class PersistentEnergyBar : MonoBehaviour
 {
     public string energyBarName = "EneegyBorder";
-    public string levelButtonName = "Button_Level";
-    public string textMeshProButtonName = "textPersian"; 
+    public string textMeshProButtonName = "textPersian";
     private Slider energyBar;
-    private Button levelButton;
     private TextMeshProUGUI textPersian;
     private float currentEnergy;
     private const float energyDrain = 0.5f;
@@ -26,61 +24,33 @@ public class PersistentEnergyBar : MonoBehaviour
         InvokeRepeating("RegenerateEnergy", regenInterval, regenInterval);
         SceneManager.sceneLoaded += OnSceneLoaded;
 
-        FindEnergyBarAndButton();
+        FindEnergyBarAndText();
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        FindEnergyBarAndButton();
+        FindEnergyBarAndText();
     }
 
-    private void FindEnergyBarAndButton()
+    private void FindEnergyBarAndText()
     {
         GameObject energyBarObject = GameObject.Find(energyBarName);
-        GameObject levelButtonObject = GameObject.Find(levelButtonName);
-
         GameObject textMeshProButtonObject = GameObject.Find(textMeshProButtonName);
 
-        if (energyBarObject != null && levelButtonObject != null)
+        if (energyBarObject != null)
         {
             energyBar = energyBarObject.GetComponent<Slider>();
-            levelButton = levelButtonObject.GetComponent<Button>();
-
-            if (energyBar != null && levelButton != null)
-            {
-                Debug.Log("Found Slider and Button by name");
-                energyBar.value = currentEnergy;
-                levelButton.onClick.RemoveAllListeners();
-                levelButton.onClick.AddListener(OnLevelButtonClicked);
-
-
-                if (levelButton.interactable)
-                {
-                    Debug.Log("Button is interactable");
-                }
-                else
-                {
-                    Debug.LogWarning("Button is not interactable");
-                }
-            }
-            else
-            {
-                Debug.LogWarning("Slider or Button component not found on the specified objects");
-            }
+            energyBar.value = currentEnergy;
         }
         else
         {
-            Debug.LogWarning("Slider or Button GameObject not found by name in the current scene");
+            Debug.LogWarning("Slider GameObject not found by name in the current scene");
         }
 
         if (textMeshProButtonObject != null)
         {
             textPersian = textMeshProButtonObject.GetComponent<TextMeshProUGUI>();
-            if (textPersian != null)
-            {
-                Debug.Log("Found TextMeshPro Button by name");
-                UpdateTextMeshProButton();
-            }
+            UpdateTextMeshProButton();
         }
         else
         {
@@ -88,9 +58,9 @@ public class PersistentEnergyBar : MonoBehaviour
         }
     }
 
-    private void OnLevelButtonClicked()
+    public void ReduceEnergy()
     {
-        Debug.Log("Action Button Clicked");
+        Debug.Log("Reducing Energy");
         currentEnergy -= energyDrain;
         if (currentEnergy < 0) currentEnergy = 0;
 
@@ -101,14 +71,11 @@ public class PersistentEnergyBar : MonoBehaviour
 
         if (textPersian != null)
         {
-            UpdateTextMeshProButton(); // 更新TextMeshPro组件的文本
+            UpdateTextMeshProButton();
         }
 
         PlayerPrefs.SetFloat("CurrentEnergy", currentEnergy);
         PlayerPrefs.SetString("LastSaveTime", DateTime.Now.ToString());
-
-        // 假设 "Yvonne" 是目标场景的名字
-        SceneManager.LoadScene("Yvonne");
     }
 
     private void RegenerateEnergy()
@@ -124,7 +91,7 @@ public class PersistentEnergyBar : MonoBehaviour
 
         if (textPersian != null)
         {
-            UpdateTextMeshProButton(); // 更新TextMeshPro组件的文本
+            UpdateTextMeshProButton();
         }
 
         PlayerPrefs.SetFloat("CurrentEnergy", currentEnergy);

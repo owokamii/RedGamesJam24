@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private string coinTextObjectName = "CoinText";
     [SerializeField] private string scoreTextObjectName = "ScoreText";
+    [SerializeField] private string totalCoinsPrefKey = "TotalCoins"; // 用于PlayerPrefs的键
 
     private TMP_Text coinText;
     private TMP_Text scoreText;
@@ -16,6 +17,7 @@ public class GameManager : MonoBehaviour
 
     private int coin;
     private int score;
+    private int totalCoins;
 
     private void Awake()
     {
@@ -24,6 +26,8 @@ public class GameManager : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject);
             SceneManager.sceneLoaded += OnSceneLoaded;
+
+            totalCoins = PlayerPrefs.GetInt(totalCoinsPrefKey, 0);
         }
         else
         {
@@ -67,10 +71,15 @@ public class GameManager : MonoBehaviour
     public void AddMoney(int amount)
     {
         coin += amount;
+        totalCoins += amount;
+
         if (coinText != null)
         {
             coinText.text = coin.ToString();
         }
+
+        PlayerPrefs.SetInt(totalCoinsPrefKey, totalCoins);
+        PlayerPrefs.Save();
     }
 
     public void AddScore(int amount)
@@ -80,5 +89,10 @@ public class GameManager : MonoBehaviour
         {
             scoreText.text = score.ToString();
         }
+    }
+
+    public int GetTotalCoins()
+    {
+        return totalCoins;
     }
 }
