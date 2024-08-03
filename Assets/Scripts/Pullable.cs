@@ -12,17 +12,33 @@ public class Pullable : MonoBehaviour
     private Vector3 initialScale;
     public bool isMoving;
     public bool isBeingDragged;
-    public bool isDestroyed; // 标志对象是否已被销毁
+    public bool isDestroyed;
+    private bool hasScored; // 标志对象是否已经计算过分数
 
     private SpriteChanger spriteChanger;
+    private RandomSpawner randomSpawner;
     private Sprite[] currentSprites;
     public int currentSpriteIndex;
+    private Sprite initialSprite; // 保存初始 Sprite
+    private int spawnPointIndex; // 记录生成点索引
+    public float remainingDestroyTime = -1f; // 剩余销毁时间
 
     private void Start()
     {
         targetTransform = GameObject.FindGameObjectWithTag("Basket").transform;
         capsuleCollider = GetComponent<CapsuleCollider2D>();
         spriteChanger = FindObjectOfType<SpriteChanger>();
+        randomSpawner = FindObjectOfType<RandomSpawner>();
+
+        // 获取初始 Sprite
+        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+        if (spriteRenderer != null)
+        {
+            initialSprite = spriteRenderer.sprite;
+        }
+
+        // 获取生成点索引
+        spawnPointIndex = GetSpawnPointIndex();
     }
 
     private void Update()
@@ -92,7 +108,12 @@ public class Pullable : MonoBehaviour
 
     private void StopObject()
     {
-        ShrinkObject();
+        if (!hasScored) // 确保每个对象只会计算一次分数
+        {
+            CheckPlantStatus();
+            hasScored = true;
+        }
+        DestroyAndReset(); // 立即销毁对象并重置生成点
     }
 
     private void ShrinkObject()
@@ -102,51 +123,67 @@ public class Pullable : MonoBehaviour
         if (transform.localScale.x < 0 || transform.localScale.y < 0 || transform.localScale.z < 0)
         {
             transform.localScale = Vector3.zero;
-            CheckPlantStatus();
-            isDestroyed = true; // 设置标志位，表示对象已被销毁
-            Destroy(gameObject);
+            isDestroyed = true;
+            DestroyAndReset(); // 销毁对象并重置生成点
         }
+    }
+
+    private void DestroyAndReset()
+    {
+        if (spawnPointIndex != -1 && randomSpawner != null)
+        {
+            randomSpawner.ResetSpawnPoint(spawnPointIndex);
+        }
+        Destroy(gameObject);
+    }
+
+    private int GetSpawnPointIndex()
+    {
+        if (randomSpawner == null) return -1;
+
+        Vector3 objPosition = transform.position;
+
+        for (int i = 0; i < randomSpawner.spawnPoints.Length; i++)
+        {
+            Vector3 spawnPointPosition = randomSpawner.spawnPoints[i].transform.position;
+            float distance = Vector3.Distance(spawnPointPosition, objPosition);
+
+            if (distance < 0.5f)
+            {
+                return i;
+            }
+        }
+        return -1;
     }
 
     public void CheckPlantStatus()
     {
         SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
-        if (spriteRenderer != null)
+        if (spriteRenderer != null && currentSprites != null && currentSpriteIndex >= 0 && currentSpriteIndex < currentSprites.Length)
         {
-            if (gameObject.name.Contains("Plant1"))
+            // 确保只有在 Sprite 已经被更换时才会加分
+            if (spriteRenderer.sprite != initialSprite)
             {
-                if (spriteRenderer.sprite == currentSprites[0])
+                if (gameObject.name.Contains("Plant"))
                 {
-                    GameManager.Instance.AddMoney(0);
-                    GameManager.Instance.AddScore(50);
+                    if (currentSpriteIndex == 0)
+                    {
+                        GameManager.Instance.AddMoney(1);
+                        GameManager.Instance.AddScore(50);
+                    }
                 }
-                else if (spriteRenderer.sprite == currentSprites[1])
+                else if (gameObject.name.Contains("Plant2"))
                 {
-                    GameManager.Instance.AddMoney(1);
-                    GameManager.Instance.AddScore(100);
-                }
-                else if (spriteRenderer.sprite == currentSprites[2])
-                {
-                    GameManager.Instance.AddMoney(0);
-                    GameManager.Instance.AddScore(25);
-                }
-            }
-            else if (gameObject.name.Contains("Plant2"))
-            {
-                if (spriteRenderer.sprite == currentSprites[0])
-                {
-                    GameManager.Instance.AddMoney(0);
-                    GameManager.Instance.AddScore(50);
-                }
-                else if (spriteRenderer.sprite == currentSprites[1])
-                {
-                    GameManager.Instance.AddMoney(1);
-                    GameManager.Instance.AddScore(100);
-                }
-                else if (spriteRenderer.sprite == currentSprites[2])
-                {
-                    GameManager.Instance.AddMoney(0);
-                    GameManager.Instance.AddScore(25);
+                    if (currentSpriteIndex == 1)
+                    {
+                        GameManager.Instance.AddMoney(1);
+                        GameManager.Instance.AddScore(100);
+                    }
+                    else if (currentSpriteIndex == 2)
+                    {
+                        GameManager.Instance.AddMoney(0);
+                        GameManager.Instance.AddScore(25);
+                    }
                 }
             }
         }

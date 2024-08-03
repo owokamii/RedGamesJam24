@@ -57,6 +57,7 @@ public class SpriteChanger : MonoBehaviour
         }
     }
 
+    //如果有新的spawnibject就加进来
     Sprite[] GetSpritesForObject(GameObject obj)
     {
         if (obj.name.Contains("Plant"))
@@ -118,6 +119,7 @@ public class SpriteChanger : MonoBehaviour
             {
                 if (pullableComponent.isDestroyed || pullableComponent.isBeingDragged || pullableComponent.isMoving)
                 {
+                    pullableComponent.remainingDestroyTime = timer; // 记录剩余销毁时间
                     yield break;
                 }
                 yield return null;
@@ -125,7 +127,6 @@ public class SpriteChanger : MonoBehaviour
 
             if (!pullableComponent.isDestroyed && !pullableComponent.isBeingDragged && !pullableComponent.isMoving)
             {
-                pullableComponent.CheckPlantStatus();
                 Destroy(obj);
                 activeCoroutines.Remove(obj);
             }
@@ -134,6 +135,7 @@ public class SpriteChanger : MonoBehaviour
             {
                 if (pullableComponent.isDestroyed || pullableComponent.isBeingDragged || pullableComponent.isMoving)
                 {
+                    pullableComponent.remainingDestroyTime = timer; // 记录剩余销毁时间
                     yield break;
                 }
                 yield return null;
@@ -149,15 +151,41 @@ public class SpriteChanger : MonoBehaviour
 
     public void RestartCoroutine(GameObject obj, Sprite[] spritesToChange, int startIndex)
     {
-        if (activeCoroutines.ContainsKey(obj))
+        Pullable pullableComponent = obj.GetComponent<Pullable>();
+        if (pullableComponent != null && pullableComponent.remainingDestroyTime > 0)
         {
-            StopCoroutine(activeCoroutines[obj]);
-            activeCoroutines[obj] = StartCoroutine(ChangeSpriteOverTime(obj, spritesToChange, startIndex));
+            // 重新启动协程并从剩余的销毁时间继续
+            StartCoroutine(ResumeDestroyAfterDelay(obj, pullableComponent.remainingDestroyTime));
         }
         else
         {
-            Coroutine coroutine = StartCoroutine(ChangeSpriteOverTime(obj, spritesToChange, startIndex));
-            activeCoroutines.Add(obj, coroutine);
+            if (activeCoroutines.ContainsKey(obj))
+            {
+                StopCoroutine(activeCoroutines[obj]);
+                activeCoroutines[obj] = StartCoroutine(ChangeSpriteOverTime(obj, spritesToChange, startIndex));
+            }
+            else
+            {
+                Coroutine coroutine = StartCoroutine(ChangeSpriteOverTime(obj, spritesToChange, startIndex));
+                activeCoroutines.Add(obj, coroutine);
+            }
+        }
+    }
+
+    IEnumerator ResumeDestroyAfterDelay(GameObject obj, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        if (obj == null) yield break;
+        Pullable pullableComponent = obj.GetComponent<Pullable>();
+        if (pullableComponent != null && !pullableComponent.isDestroyed && !pullableComponent.isBeingDragged && !pullableComponent.isMoving)
+        {
+            int spawnPointIndex = GetSpawnPointIndex(obj);
+            if (spawnPointIndex != -1 && randomSpawner != null)
+            {
+                Destroy(obj);
+                activeCoroutines.Remove(obj);
+                randomSpawner.ResetSpawnPoint(spawnPointIndex);
+            }
         }
     }
 
