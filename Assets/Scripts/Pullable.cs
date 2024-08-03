@@ -118,6 +118,16 @@ public class Pullable : MonoBehaviour
         DestroyAndReset();
     }
 
+    private void ShrinkObject()
+    {
+        transform.localScale -= Vector3.one * shrinkSpeed * Time.deltaTime;
+
+        if (transform.localScale.x < 0 || transform.localScale.y < 0 || transform.localScale.z < 0)
+        {
+            DestroyAndReset();
+        }
+    }
+
     private void DestroyAndReset()
     {
         if (spawnPointIndex != -1 && randomSpawner != null)

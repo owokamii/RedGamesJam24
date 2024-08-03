@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class AI : MonoBehaviour
@@ -5,46 +6,66 @@ public class AI : MonoBehaviour
     [SerializeField] private float speed;
     [SerializeField] private float range;
     [SerializeField] private float maxDistance;
+    [SerializeField] private bool isFacingRight;
+    [SerializeField] private float pauseDuration; // Duration of the pause at each destination
 
     private Vector2 waypoint;
-    private Camera mainCamera;
-    private float screenLeft;
-    private float screenRight;
-    private float screenTop;
-    private float screenBottom;
+    private SpriteRenderer spriteRenderer;
+    private bool isMoving = true;
 
     private void Start()
     {
-        mainCamera = Camera.main;
-        CalculateScreenBounds();
+        spriteRenderer = GetComponent<SpriteRenderer>();
         SetNewDestination();
     }
 
     private void Update()
     {
+        if (isMoving)
+        {
+            MoveTowardsWaypoint();
+        }
+
+        FlipSprite();
+    }
+
+    private void MoveTowardsWaypoint()
+    {
         transform.position = Vector2.MoveTowards(transform.position, waypoint, speed * Time.deltaTime);
 
-        if (Vector2.Distance(transform.position, waypoint) < range)
+        Vector2 direction = waypoint - (Vector2)transform.position;
+
+        if (direction.x > 0)
         {
-            SetNewDestination();
+            isFacingRight = true;
+        }
+        else if (direction.x < 0)
+        {
+            isFacingRight = false;
+        }
+
+        // Check if the AI has reached the waypoint
+        if (Vector2.Distance(transform.position, waypoint) < 0.1f)
+        {
+            StartCoroutine(PauseBeforeNextMove());
         }
     }
 
-    private void CalculateScreenBounds()
+    private void FlipSprite()
     {
-        float halfHeight = mainCamera.orthographicSize;
-        float halfWidth = mainCamera.aspect * halfHeight;
-
-        screenLeft = -halfWidth;
-        screenRight = halfWidth;
-        screenTop = halfHeight;
-        screenBottom = -halfHeight;
+        spriteRenderer.flipX = isFacingRight;
     }
 
     private void SetNewDestination()
     {
-        float newX = Random.Range(screenLeft + maxDistance, screenRight - maxDistance);
-        float newY = Random.Range(screenBottom + maxDistance, screenTop - maxDistance);
-        waypoint = new Vector2(newX, newY);
+        waypoint = new Vector2(Random.Range(-maxDistance, maxDistance), Random.Range(-maxDistance, maxDistance));
+    }
+
+    private IEnumerator PauseBeforeNextMove()
+    {
+        isMoving = false;
+        yield return new WaitForSeconds(pauseDuration);
+        SetNewDestination();
+        isMoving = true;
     }
 }
