@@ -8,6 +8,8 @@ public class PersistentEnergyBar : MonoBehaviour
 {
     public string energyBarName = "EneegyBorder";
     public string actionButtonName = "Button_Level";
+    public string nurseryButtonName = "Button_Nursery";
+    public string collectionButtonName = "collectionButtonName";
     public string textMeshProButtonName = "textPersian"; 
     private Slider energyBar;
     private Button actionButton;
