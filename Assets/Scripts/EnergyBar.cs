@@ -7,12 +7,10 @@ using System;
 public class PersistentEnergyBar : MonoBehaviour
 {
     public string energyBarName = "EneegyBorder";
-    public string actionButtonName = "Button_Level";
-    public string nurseryButtonName = "Button_Nursery";
-    public string collectionButtonName = "collectionButtonName";
+    public string levelButtonName = "Button_Level";
     public string textMeshProButtonName = "textPersian"; 
     private Slider energyBar;
-    private Button actionButton;
+    private Button levelButton;
     private TextMeshProUGUI textPersian;
     private float currentEnergy;
     private const float energyDrain = 0.5f;
@@ -39,22 +37,24 @@ public class PersistentEnergyBar : MonoBehaviour
     private void FindEnergyBarAndButton()
     {
         GameObject energyBarObject = GameObject.Find(energyBarName);
-        GameObject actionButtonObject = GameObject.Find(actionButtonName);
+        GameObject levelButtonObject = GameObject.Find(levelButtonName);
+
         GameObject textMeshProButtonObject = GameObject.Find(textMeshProButtonName);
 
-        if (energyBarObject != null && actionButtonObject != null)
+        if (energyBarObject != null && levelButtonObject != null)
         {
             energyBar = energyBarObject.GetComponent<Slider>();
-            actionButton = actionButtonObject.GetComponent<Button>();
+            levelButton = levelButtonObject.GetComponent<Button>();
 
-            if (energyBar != null && actionButton != null)
+            if (energyBar != null && levelButton != null)
             {
                 Debug.Log("Found Slider and Button by name");
                 energyBar.value = currentEnergy;
-                actionButton.onClick.RemoveAllListeners();
-                actionButton.onClick.AddListener(OnActionButtonClicked);
+                levelButton.onClick.RemoveAllListeners();
+                levelButton.onClick.AddListener(OnLevelButtonClicked);
 
-                if (actionButton.interactable)
+
+                if (levelButton.interactable)
                 {
                     Debug.Log("Button is interactable");
                 }
@@ -88,7 +88,7 @@ public class PersistentEnergyBar : MonoBehaviour
         }
     }
 
-    private void OnActionButtonClicked()
+    private void OnLevelButtonClicked()
     {
         Debug.Log("Action Button Clicked");
         currentEnergy -= energyDrain;
