@@ -22,6 +22,7 @@ public class Pullable : MonoBehaviour
     private Sprite initialSprite;
     private int spawnPointIndex;
     public float remainingDestroyTime = -1f;
+    public bool hasChangedSprite = false;
 
     private void Start()
     {
@@ -41,7 +42,6 @@ public class Pullable : MonoBehaviour
         // Example of setting current sprites, you should replace someSpriteArray with your actual sprite array
         SetCurrentSprites(spriteChanger.plantSprites, 0);
     }
-
 
     private void Update()
     {
@@ -72,7 +72,10 @@ public class Pullable : MonoBehaviour
     {
         isBeingDragged = false;
         ResetScale();
-        spriteChanger.RestartCoroutine(gameObject, currentSprites, currentSpriteIndex);
+        if (!hasChangedSprite)
+        {
+            spriteChanger.RestartCoroutine(gameObject, currentSprites, currentSpriteIndex);
+        }
     }
 
     private void ResetScale()
@@ -157,7 +160,6 @@ public class Pullable : MonoBehaviour
         return -1;
     }
 
-    //加进来新object资料
     public void CheckPlantStatus()
     {
         SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();

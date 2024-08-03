@@ -24,6 +24,7 @@ public class SpriteChanger : MonoBehaviour
             Debug.Log("RandomSpawner found: " + randomSpawner.name);
         }
     }
+
     int GetSpawnPointIndex(GameObject obj)
     {
         if (obj == null)
@@ -48,13 +49,13 @@ public class SpriteChanger : MonoBehaviour
     {
         if (other.CompareTag("SpawnedObject"))
         {
-            if (!activeCoroutines.ContainsKey(other.gameObject))
+            Pullable pullableComponent = other.GetComponent<Pullable>();
+            if (pullableComponent != null && !pullableComponent.hasChangedSprite)
             {
-                Sprite[] spritesToChange = GetSpritesForObject(other.gameObject);
-                if (spritesToChange != null)
+                if (!activeCoroutines.ContainsKey(other.gameObject))
                 {
-                    Pullable pullableComponent = other.GetComponent<Pullable>();
-                    if (pullableComponent != null)
+                    Sprite[] spritesToChange = GetSpritesForObject(other.gameObject);
+                    if (spritesToChange != null)
                     {
                         if (IscolliderEnter)
                         {
@@ -69,7 +70,6 @@ public class SpriteChanger : MonoBehaviour
         }
     }
 
-    //如果有新object加进来这里
     Sprite[] GetSpritesForObject(GameObject obj)
     {
         Debug.Log("GetSpritesForObject called for: " + obj.name);
@@ -135,8 +135,23 @@ public class SpriteChanger : MonoBehaviour
 
             if (obj != null)
             {
-                spriteRenderer.sprite = spritesToChange[i];
-                pullableComponent.UpdateCurrentSpriteIndex(i);
+                if (!pullableComponent.hasChangedSprite && pullableComponent.isBeingDragged)
+                {
+                    spriteRenderer.sprite = spritesToChange[i];
+                    pullableComponent.UpdateCurrentSpriteIndex(i);
+                    pullableComponent.hasChangedSprite = true;
+                }
+                else if (pullableComponent.hasChangedSprite && pullableComponent.isBeingDragged)
+                {
+                    yield break;
+                    
+                }else
+                {
+
+                    spriteRenderer.sprite = spritesToChange[i];
+                    pullableComponent.UpdateCurrentSpriteIndex(i);
+                    pullableComponent.hasChangedSprite = true;
+                }
             }
         }
 
