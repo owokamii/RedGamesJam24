@@ -113,7 +113,7 @@ public class EnergyBar : MonoBehaviour
     {
         if (textMeshProButton != null)
         {
-            textMeshProButton.text = $"Energy: {currentEnergy * 100:F2}%";
+            textMeshProButton.text = $"{currentEnergy * 100:F2}%";
         }
     }
 
