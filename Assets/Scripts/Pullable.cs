@@ -13,10 +13,15 @@ public class Pullable : MonoBehaviour
     public bool isMoving;
     public bool isBeingDragged;
 
+    private SpriteChanger spriteChanger;
+    private Sprite[] currentSprites;
+    public int currentSpriteIndex;
+
     private void Start()
     {
         targetTransform = GameObject.FindGameObjectWithTag("Basket").transform;
         capsuleCollider = GetComponent<CapsuleCollider2D>();
+        spriteChanger = FindObjectOfType<SpriteChanger>();
     }
 
     private void Update()
@@ -48,6 +53,7 @@ public class Pullable : MonoBehaviour
     {
         isBeingDragged = false;
         ResetScale();
+        spriteChanger.RestartCoroutine(gameObject, currentSprites, currentSpriteIndex);
     }
 
     private void ResetScale()
@@ -94,7 +100,58 @@ public class Pullable : MonoBehaviour
         if (transform.localScale.x < 0 || transform.localScale.y < 0 || transform.localScale.z < 0)
         {
             transform.localScale = Vector3.zero;
+            CheckPlantStatus();
             Destroy(gameObject);
         }
+    }
+
+    public void CheckPlantStatus()
+    {
+        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+        if (spriteRenderer != null)
+        {
+            if (gameObject.name.Contains("Plant1"))
+            {
+                if (spriteRenderer.sprite == currentSprites[0])
+                {
+                    GameManager.Instance.AddMoney(0);
+                    GameManager.Instance.AddScore(50);
+                }
+                else if (spriteRenderer.sprite == currentSprites[1])
+                {
+                    GameManager.Instance.AddMoney(1);
+                    GameManager.Instance.AddScore(100);
+                }
+                else if (spriteRenderer.sprite == currentSprites[2])
+                {
+                    GameManager.Instance.AddMoney(0);
+                    GameManager.Instance.AddScore(25);
+                }
+            }
+            else if (gameObject.name.Contains("Plant2"))
+            {
+                if (spriteRenderer.sprite == currentSprites[0])
+                {
+                    GameManager.Instance.AddMoney(0);
+                    GameManager.Instance.AddScore(50);
+                }
+                else if (spriteRenderer.sprite == currentSprites[1])
+                {
+                    GameManager.Instance.AddMoney(1);
+                    GameManager.Instance.AddScore(100);
+                }
+                else if (spriteRenderer.sprite == currentSprites[2])
+                {
+                    GameManager.Instance.AddMoney(0);
+                    GameManager.Instance.AddScore(25);
+                }
+            }
+        }
+    }
+
+    public void SetCurrentSprites(Sprite[] sprites, int startIndex)
+    {
+        currentSprites = sprites;
+        currentSpriteIndex = startIndex;
     }
 }

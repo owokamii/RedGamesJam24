@@ -53,11 +53,11 @@ public class RandomSpawner : MonoBehaviour
 
     public void ResetSpawnPoint(int index)
     {
-        Debug.Log("ResetSpwanpoint");
+        //Debug.Log("ResetSpwanpoint");
         if (index >= 0 && index < hasSpawned.Length)
         {
             hasSpawned[index] = false;
-            Debug.Log("Reset spawn point at index: " + index);
+            //Debug.Log("Reset spawn point at index: " + index);
         }
     }
 }

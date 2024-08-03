@@ -48,7 +48,9 @@ public class SpriteChanger : MonoBehaviour
                 Sprite[] spritesToChange = GetSpritesForObject(other.gameObject);
                 if (spritesToChange != null)
                 {
-                    Coroutine coroutine = StartCoroutine(ChangeSpriteOverTime(other.gameObject, spritesToChange));
+                    Pullable pullableComponent = other.GetComponent<Pullable>();
+                    pullableComponent.SetCurrentSprites(spritesToChange, 0);
+                    Coroutine coroutine = StartCoroutine(ChangeSpriteOverTime(other.gameObject, spritesToChange, 0));
                     activeCoroutines.Add(other.gameObject, coroutine);
                 }
             }
@@ -67,7 +69,7 @@ public class SpriteChanger : MonoBehaviour
         }
     }
 
-    IEnumerator ChangeSpriteOverTime(GameObject obj, Sprite[] spritesToChange)
+    IEnumerator ChangeSpriteOverTime(GameObject obj, Sprite[] spritesToChange, int startIndex)
     {
         if (spritesToChange == null)
         {
@@ -86,32 +88,34 @@ public class SpriteChanger : MonoBehaviour
             yield break;
         }
 
-        for (int i = 0; i < spritesToChange.Length; i++)
+        for (int i = startIndex; i < spritesToChange.Length; i++)
         {
-            if (pullableComponent.isBeingDragged || pullableComponent.isMoving)
+            while (pullableComponent.isBeingDragged || pullableComponent.isMoving)
             {
-                yield break;
+                yield return null; // 等待直到拖拽结束或移动完成
             }
 
             yield return new WaitForSeconds(2);
             spriteRenderer.sprite = spritesToChange[i];
+            pullableComponent.currentSpriteIndex = i; // 更新当前的 Sprite 索引
         }
 
         int spawnPointIndex = GetSpawnPointIndex(obj);
-        Debug.Log($"GetSpawnPointIndex returned {spawnPointIndex} for {obj.name}");
+        //Debug.Log($"GetSpawnPointIndex returned {spawnPointIndex} for {obj.name}");
         if (spawnPointIndex != -1 && randomSpawner != null)
         {
             for (float timer = 1f; timer > 0; timer -= Time.deltaTime)
             {
                 if (pullableComponent.isBeingDragged || pullableComponent.isMoving)
                 {
-                    yield break;
+                    yield return null;
                 }
                 yield return null;
             }
 
             if (!pullableComponent.isBeingDragged && !pullableComponent.isMoving)
             {
+                pullableComponent.CheckPlantStatus();
                 Destroy(obj);
                 activeCoroutines.Remove(obj);
             }
@@ -120,16 +124,30 @@ public class SpriteChanger : MonoBehaviour
             {
                 if (pullableComponent.isBeingDragged || pullableComponent.isMoving)
                 {
-                    yield break;
+                    yield return null;
                 }
                 yield return null;
             }
 
             if (!pullableComponent.isBeingDragged && !pullableComponent.isMoving)
             {
-                Debug.Log("Resetting spawn point at index: " + spawnPointIndex);
+               // Debug.Log("Resetting spawn point at index: " + spawnPointIndex);
                 randomSpawner.ResetSpawnPoint(spawnPointIndex);
             }
+        }
+    }
+
+    public void RestartCoroutine(GameObject obj, Sprite[] spritesToChange, int startIndex)
+    {
+        if (activeCoroutines.ContainsKey(obj))
+        {
+            StopCoroutine(activeCoroutines[obj]);
+            activeCoroutines[obj] = StartCoroutine(ChangeSpriteOverTime(obj, spritesToChange, startIndex));
+        }
+        else
+        {
+            Coroutine coroutine = StartCoroutine(ChangeSpriteOverTime(obj, spritesToChange, startIndex));
+            activeCoroutines.Add(obj, coroutine);
         }
     }
 }
