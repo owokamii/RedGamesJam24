@@ -115,7 +115,7 @@ public class Pullable : MonoBehaviour
             CheckPlantStatus();
             hasScored = true;
         }
-        DestroyAndReset();
+        ShrinkObject();
     }
 
     private void ShrinkObject()
