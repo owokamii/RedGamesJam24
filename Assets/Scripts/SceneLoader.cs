@@ -6,7 +6,7 @@ public class SceneLoader : MonoBehaviour
     public void LoadScene(string name)
     {
         Debug.Log(name);
-        SceneManager.LoadScene(name);
+        SceneManager.LoadSceneAsync(name);
     }
 
     public void SetLevelNumber(int levelNumber)
