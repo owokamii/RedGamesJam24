@@ -7,11 +7,9 @@ public class AnimationChanger : MonoBehaviour
     private Dictionary<GameObject, Coroutine> activeCoroutines = new Dictionary<GameObject, Coroutine>();
     private RandomSpawner randomSpawner;
     private bool IsColliderEnter = false;
-    private LayerDetector layerDetector;
 
     void Start()
     {
-        layerDetector = GetComponent<LayerDetector>();
         randomSpawner = FindObjectOfType<RandomSpawner>();
         if (randomSpawner == null)
         {
@@ -47,14 +45,10 @@ public class AnimationChanger : MonoBehaviour
     {
         if (other.CompareTag("SpawnedObject"))
         {
-            SpriteRenderer spriteRenderer = other.GetComponent<SpriteRenderer>();
-            if (spriteRenderer != null)
-            {
-                // Change the sorting order
-                spriteRenderer.sortingOrder = layerDetector.GetSoilFrontLayer - 1;
-            }
+            Debug.Log("Helloworld");
             Pullable pullableComponent = other.GetComponent<Pullable>();
-            if (pullableComponent != null && !pullableComponent.hasChangedState)
+            GrowthStages growthStages = other.GetComponent<GrowthStages>();
+            if (pullableComponent != null && growthStages != null && !growthStages.HasChangedState())
             {
                 if (!activeCoroutines.ContainsKey(other.gameObject))
                 {
@@ -74,20 +68,24 @@ public class AnimationChanger : MonoBehaviour
     {
         Animator animator = obj.GetComponent<Animator>();
         Pullable pullableComponent = obj.GetComponent<Pullable>();
+        GrowthStages growthStages = obj.GetComponent<GrowthStages>();
 
-        for (int i = startIndex; i < pullableComponent.animationStages.Length; i++)
+        while (true)
         {
             if (pullableComponent.isDestroyed)
             {
                 yield break;
             }
 
-            while (pullableComponent.isBeingDragged || pullableComponent.isMoving)
+            // 每次循环检查isBeingDragged和其他状态
+            Debug.Log($"Loop Check - isBeingDragged: {pullableComponent.isBeingDragged}, isMoving: {pullableComponent.isMoving}, currentStage: {growthStages.GetCurrentStage()}");
+
+            if (pullableComponent.isBeingDragged || pullableComponent.isMoving)
             {
                 yield return null;
+                continue;
             }
 
-            yield return new WaitForSeconds(2);
             if (pullableComponent.isDestroyed || pullableComponent.isMoving)
             {
                 yield break;
@@ -95,53 +93,57 @@ public class AnimationChanger : MonoBehaviour
 
             if (obj != null)
             {
-                animator.Play(pullableComponent.animationStages[i]);
-                pullableComponent.UpdateCurrentAnimationStage(i);
-                pullableComponent.hasChangedState = true;
-            }
-        }
+                int currentStage = growthStages.GetCurrentStage();
+                Debug.Log($"Current Stage: {currentStage}, HasChangedState: {growthStages.HasChangedState()}, IsBeingDragged: {pullableComponent.isBeingDragged}");
 
-        int spawnPointIndex = GetSpawnPointIndex(obj);
-        if (spawnPointIndex != -1 && randomSpawner != null)
-        {
-            for (float timer = 1f; timer > 0; timer -= Time.deltaTime)
-            {
-                if (pullableComponent.isDestroyed || pullableComponent.isBeingDragged || pullableComponent.isMoving)
+                if (!growthStages.HasChangedState() && pullableComponent.isBeingDragged)
                 {
-                    pullableComponent.remainingDestroyTime = timer;
-                    yield break;
+                    Debug.Log("Entering first if condition");
+                    pullableComponent.UpdateCurrentAnimationStage(0);
+                    growthStages.SetChangedStateTrue();
                 }
-                yield return null;
-            }
-
-            if (!pullableComponent.isDestroyed && !pullableComponent.isBeingDragged && !pullableComponent.isMoving)
-            {
-                CheckingColliderEnter();
-                Destroy(obj);
-                activeCoroutines.Remove(obj);
-            }
-
-            for (float timer = 2f; timer > 0; timer -= Time.deltaTime)
-            {
-                if (pullableComponent.isDestroyed || pullableComponent.isBeingDragged || pullableComponent.isMoving)
+                else if (growthStages.HasChangedState() && pullableComponent.isBeingDragged)
                 {
-                    pullableComponent.remainingDestroyTime = timer;
-                    yield break;
+                    Debug.Log("Entering second if condition");
+                    if (currentStage == 1)
+                    {
+                        Debug.Log("Entering inner if condition of second else if");
+                        animator.speed = 0;
+                        yield break;
+                    }
                 }
-                yield return null;
-            }
+                else
+                {
+                    Debug.Log("Entering else condition");
+                    animator.speed = 1;
+                    pullableComponent.UpdateCurrentAnimationStage(currentStage);
+                }
 
-            if (!pullableComponent.isDestroyed && !pullableComponent.isBeingDragged && !pullableComponent.isMoving)
-            {
-                randomSpawner.ResetSpawnPoint(spawnPointIndex);
+                if (currentStage == 2)
+                {
+                    yield return new WaitForSeconds(0.5f);
+                    if (!pullableComponent.isDestroyed && !pullableComponent.isBeingDragged && !pullableComponent.isMoving)
+                    {
+                        int spawnPointIndex = GetSpawnPointIndex(obj);
+                        if (spawnPointIndex != -1 && randomSpawner != null)
+                        {
+                            CheckingColliderEnter();
+                            Destroy(obj);
+                            activeCoroutines.Remove(obj);
+                            randomSpawner.ResetSpawnPoint(spawnPointIndex);
+                        }
+                    }
+                }
             }
+            yield return null;
         }
     }
 
     public void RestartCoroutine(GameObject obj, int startIndex)
     {
         Pullable pullableComponent = obj.GetComponent<Pullable>();
-        if (pullableComponent != null && pullableComponent.remainingDestroyTime > 0)
+        GrowthStages growthStages = obj.GetComponent<GrowthStages>();
+        if (pullableComponent != null && growthStages != null && pullableComponent.remainingDestroyTime > 0)
         {
             StartCoroutine(ResumeDestroyAfterDelay(obj, pullableComponent.remainingDestroyTime));
         }
@@ -149,7 +151,11 @@ public class AnimationChanger : MonoBehaviour
         {
             if (activeCoroutines.ContainsKey(obj))
             {
-                StopCoroutine(activeCoroutines[obj]);
+                Coroutine routine = activeCoroutines[obj];
+                if (routine != null)
+                {
+                    StopCoroutine(routine);
+                }
                 activeCoroutines[obj] = StartCoroutine(ChangeAnimationStageOverTime(obj, startIndex));
             }
             else
@@ -165,7 +171,8 @@ public class AnimationChanger : MonoBehaviour
         yield return new WaitForSeconds(delay);
         if (obj == null) yield break;
         Pullable pullableComponent = obj.GetComponent<Pullable>();
-        if (pullableComponent != null && !pullableComponent.isDestroyed && !pullableComponent.isBeingDragged && !pullableComponent.isMoving)
+        GrowthStages growthStages = obj.GetComponent<GrowthStages>();
+        if (pullableComponent != null && growthStages != null && !pullableComponent.isDestroyed && !pullableComponent.isBeingDragged && !pullableComponent.isMoving)
         {
             int spawnPointIndex = GetSpawnPointIndex(obj);
             if (spawnPointIndex != -1 && randomSpawner != null)
@@ -182,7 +189,11 @@ public class AnimationChanger : MonoBehaviour
     {
         if (activeCoroutines.ContainsKey(obj))
         {
-            StopCoroutine(activeCoroutines[obj]);
+            Coroutine routine = activeCoroutines[obj];
+            if (routine != null)
+            {
+                StopCoroutine(routine);
+            }
             activeCoroutines.Remove(obj);
         }
     }
@@ -190,5 +201,10 @@ public class AnimationChanger : MonoBehaviour
     public void CheckingColliderEnter()
     {
         IsColliderEnter = false;
+    }
+
+    public void ResumeAnimation(Animator animator)
+    {
+        animator.speed = 1;
     }
 }

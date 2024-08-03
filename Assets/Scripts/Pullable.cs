@@ -19,7 +19,7 @@ public class Pullable : MonoBehaviour
     private GrowthStages growthStages;
     private AnimationChanger animationChanger;
     private RandomSpawner randomSpawner;
-    public string[] animationStages; // 确保定义了animationStages
+    public string[] animationStages;
     public int currentAnimationStageIndex;
     private int spawnPointIndex;
     public float remainingDestroyTime = -1f;
@@ -36,7 +36,6 @@ public class Pullable : MonoBehaviour
 
         spawnPointIndex = GetSpawnPointIndex();
 
-        // 确保初始化animationStages
         animationStages = new string[] { "Stage1", "Stage2", "Stage3" };
 
         SetCurrentAnimationStage(0);
@@ -44,6 +43,7 @@ public class Pullable : MonoBehaviour
 
     private void Update()
     {
+        Debug.Log(isBeingDragged);
         if (isMoving)
         {
             MoveObject();
@@ -60,6 +60,7 @@ public class Pullable : MonoBehaviour
         initialScale = transform.localScale;
         initialMousePosition = Input.mousePosition;
         isBeingDragged = true;
+        animationChanger.RestartCoroutine(gameObject, growthStages.GetCurrentStage());
     }
 
     private void OnMouseDrag()
@@ -71,10 +72,7 @@ public class Pullable : MonoBehaviour
     {
         isBeingDragged = false;
         ResetScale();
-        if (!hasChangedState)
-        {
-            animationChanger.RestartCoroutine(gameObject, growthStages.GetCurrentStage());
-        }
+        animationChanger.RestartCoroutine(gameObject, growthStages.GetCurrentStage());
     }
 
     private void ResetScale()
