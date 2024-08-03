@@ -6,10 +6,14 @@ public class LayerDetector : MonoBehaviour
 
     private SpriteRenderer frontSoilSprite;
     private SpriteRenderer backSoilSprite;
-    [SerializeField] private int soilBackLayer;
+    private int soilBackLayer;
+
+    public int GetSoilFrontLayer { get; set; }
 
     private void Start()
     {
+        GetSoilFrontLayer = soilFrontLayer;
+
         Transform soilFrontTransform = transform.Find("SoilFront");
         if (soilFrontTransform != null)
         {
@@ -22,22 +26,12 @@ public class LayerDetector : MonoBehaviour
             backSoilSprite = soilBackTransform.GetComponent<SpriteRenderer>();
         }
 
-        if (frontSoilSprite != null)
-        {
-            frontSoilSprite.sortingOrder = 1;
-        }
-
-        if (backSoilSprite != null)
-        {
-            backSoilSprite.sortingOrder = 0;
-        }
-
         SetSortingOrder();
     }
 
     private void SetSortingOrder()
     {
         frontSoilSprite.sortingOrder = soilFrontLayer;
-        backSoilSprite.sortingOrder = soilFrontLayer + 2;
+        backSoilSprite.sortingOrder = soilFrontLayer - 2;
     }
 }

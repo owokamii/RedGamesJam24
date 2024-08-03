@@ -8,12 +8,15 @@ public class SpriteChanger : MonoBehaviour
     public Sprite[] plantSprites2;
     public Sprite[] plantSprites3;
 
+    private LayerDetector layerDetector;
     private Dictionary<GameObject, Coroutine> activeCoroutines = new Dictionary<GameObject, Coroutine>();
     private RandomSpawner randomSpawner;
     private bool IscolliderEnter = false;
 
     void Start()
     {
+        layerDetector = GetComponent<LayerDetector>();
+
         randomSpawner = FindObjectOfType<RandomSpawner>();
         if (randomSpawner == null)
         {
@@ -49,6 +52,13 @@ public class SpriteChanger : MonoBehaviour
     {
         if (other.CompareTag("SpawnedObject"))
         {
+            SpriteRenderer spriteRenderer = other.GetComponent<SpriteRenderer>();
+            if (spriteRenderer != null)
+            {
+                // Change the sorting order
+                spriteRenderer.sortingOrder = layerDetector.GetSoilFrontLayer - 1;
+            }
+
             Pullable pullableComponent = other.GetComponent<Pullable>();
             if (pullableComponent != null && !pullableComponent.hasChangedSprite)
             {
