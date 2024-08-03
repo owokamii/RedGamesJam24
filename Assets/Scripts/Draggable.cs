@@ -3,28 +3,51 @@ using UnityEngine;
 public class Draggable : MonoBehaviour
 {
     [SerializeField] private Animator animator;
+    [SerializeField] private float gravityScale = 10f;
+    [SerializeField] private float groundY = -20f;
 
     private AI ai;
-    //private Rigidbody2D rb;
     private Vector2 difference = Vector2.zero;
+    private Vector3 velocity = Vector3.zero;
+    private bool isDragged = false;
+    public bool isGrounded = true;
 
     private void Start()
     {
         ai = GetComponent<AI>();
         animator = GetComponent<Animator>();
-        //rb = GetComponent<Rigidbody2D>();
     }
 
     private void Update()
     {
-        //Debug.Log(rb.velocity.y);
+        if (!isDragged)
+        {
+            velocity.y -= gravityScale * Time.deltaTime;
+            transform.position += velocity * Time.deltaTime;
+
+            if (transform.position.y <= groundY)
+            {
+                transform.position = new Vector3(transform.position.x, groundY, transform.position.z);
+                velocity.y = 0;
+                isGrounded = true;
+            }
+            else if(transform.position.y >= groundY)
+            {
+                isGrounded = false;
+            }
+        }
+        else
+        {
+            isGrounded = false;
+        }
     }
 
     private void OnMouseDown()
     {
         difference = (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition) - (Vector2)transform.position;
         animator.SetBool("IsDragged", true);
-        ai.isMoving = false;
+        isDragged = true;
+        velocity = Vector3.zero;
     }
 
     private void OnMouseDrag()
@@ -35,5 +58,6 @@ public class Draggable : MonoBehaviour
     private void OnMouseUp()
     {
         animator.SetBool("IsDragged", false);
+        isDragged = false;
     }
 }

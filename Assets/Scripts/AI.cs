@@ -1,4 +1,5 @@
 using System.Collections;
+using UnityEditor;
 using UnityEngine;
 
 public class AI : MonoBehaviour
@@ -9,7 +10,7 @@ public class AI : MonoBehaviour
     [SerializeField] private float minIdleTime = 0.5f;
     [SerializeField] private float maxIdleTime = 1.5f;
 
-    //private Rigidbody2D rb;
+    private Draggable draggable;
     private Vector2 direction;
     public bool isMoving;
     private float roamTime;
@@ -17,7 +18,7 @@ public class AI : MonoBehaviour
 
     private void Start()
     {
-        //rb = GetComponent<Rigidbody2D>();
+        draggable = GetComponent<Draggable>();
 
         ChooseNewDirection();
     }
@@ -29,13 +30,14 @@ public class AI : MonoBehaviour
             MoveInDirection();
         }
 
-        /*if (rb.velocity.y < -5.0f)
+        if (draggable.isGrounded)
         {
-            rb.velocity = new Vector2(rb.velocity.x, -5.0f);
-        }*/
-
-
-        Debug.Log(isMoving);
+            isMoving = true;
+        }
+        else
+        {
+            isMoving = false;
+        }
     }
 
     private void MoveInDirection()
@@ -47,7 +49,6 @@ public class AI : MonoBehaviour
         {
             if(isMoving)
             {
-                Debug.Log("imi dle lol");
                 StartCoroutine(Idle());
             }
         }
@@ -75,11 +76,12 @@ public class AI : MonoBehaviour
             case 1:
                 direction = Vector2.right;
                 break;
+            case 2:
+                    direction = Vector2.up;
+                break;
+            case 3:
+                direction = Vector2.down;
+                break;
         }
-    }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        isMoving = true;
     }
 }
