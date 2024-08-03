@@ -24,9 +24,11 @@ public class SpriteChanger : MonoBehaviour
             Debug.Log("RandomSpawner found: " + randomSpawner.name);
         }
     }
-
     int GetSpawnPointIndex(GameObject obj)
     {
+        if (obj == null)
+            return -1;
+
         Vector3 objPosition = obj.transform.position;
 
         for (int i = 0; i < randomSpawner.spawnPoints.Length; i++)
