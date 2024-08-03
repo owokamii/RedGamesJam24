@@ -3,71 +3,83 @@ using UnityEngine;
 
 public class AI : MonoBehaviour
 {
-    [SerializeField] private float speed;
-    [SerializeField] private float range;
-    [SerializeField] private float maxDistance;
-    [SerializeField] private bool isFacingRight;
-    [SerializeField] private float pauseDuration; // Duration of the pause at each destination
-    [SerializeField] private Rigidbody2D rb;
+    [SerializeField] private float speed = 2.0f;
+    [SerializeField] private float minRoamTime = 1.0f;
+    [SerializeField] private float maxRoamTime = 3.0f;
+    [SerializeField] private float minIdleTime = 0.5f;
+    [SerializeField] private float maxIdleTime = 1.5f;
 
-    private Vector2 waypoint;
-    private SpriteRenderer spriteRenderer;
-    private bool isMoving = true;
+    private Rigidbody2D rb;
+    private Vector2 direction;
+    public bool isMoving;
+    private float roamTime;
+    private float idleTime;
 
     private void Start()
     {
-        spriteRenderer = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
-        SetNewDestination();
+
+        ChooseNewDirection();
     }
 
     private void Update()
     {
         if (isMoving)
         {
-            MoveTowardsWaypoint();
+            MoveInDirection();
         }
 
-        FlipSprite();
-    }
-
-    private void MoveTowardsWaypoint()
-    {
-        transform.position = Vector2.MoveTowards(transform.position, waypoint, speed * Time.deltaTime);
-
-        Vector2 direction = waypoint - (Vector2)transform.position;
-
-        if (direction.x > 0)
+        if (rb.velocity.y < -5.0f)
         {
-            isFacingRight = true;
-        }
-        else if (direction.x < 0)
-        {
-            isFacingRight = false;
+            rb.velocity = new Vector2(rb.velocity.x, -5.0f);
         }
 
-        // Check if the AI has reached the waypoint
-        if (Vector2.Distance(transform.position, waypoint) < 0.1f)
-        {
-            StartCoroutine(PauseBeforeNextMove());
-        }
+
+        Debug.Log(isMoving);
     }
 
-    private void FlipSprite()
+    private void MoveInDirection()
     {
-        spriteRenderer.flipX = isFacingRight;
+        transform.Translate(direction * speed * Time.deltaTime);
+
+        roamTime -= Time.deltaTime;
+        if (roamTime <= 0)
+        {
+            if(isMoving)
+            {
+                Debug.Log("imi dle lol");
+                StartCoroutine(Idle());
+            }
+        }
     }
 
-    private void SetNewDestination()
-    {
-        waypoint = new Vector2(Random.Range(-maxDistance, maxDistance), Random.Range(-maxDistance, maxDistance));
-    }
-
-    private IEnumerator PauseBeforeNextMove()
+    private IEnumerator Idle()
     {
         isMoving = false;
-        yield return new WaitForSeconds(pauseDuration);
-        SetNewDestination();
+        idleTime = Random.Range(minIdleTime, maxIdleTime);
+        yield return new WaitForSeconds(idleTime);
+        ChooseNewDirection();
+    }
+
+    private void ChooseNewDirection()
+    {
+        isMoving = true;
+        roamTime = Random.Range(minRoamTime, maxRoamTime);
+
+        int randomDirection = Random.Range(0, 4);
+        switch (randomDirection)
+        {
+            case 0:
+                direction = Vector2.left;
+                break;
+            case 1:
+                direction = Vector2.right;
+                break;
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
         isMoving = true;
     }
 }
