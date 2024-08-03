@@ -93,6 +93,7 @@ public class Pullable : MonoBehaviour
             // 完成拉伸
             if (newScale.y >= initialScale.y * maxStretchScale)
             {
+                FindObjectOfType<AudioManager>().PlaySFX("POP");
                 isMoving = true;
                 capsuleCollider.enabled = false;
                 spriteChanger.StopCoroutineForObject(gameObject); // 停止更换Sprite的协程
@@ -170,6 +171,7 @@ public class Pullable : MonoBehaviour
                     {
                         GameManager.Instance.AddMoney(1);
                         GameManager.Instance.AddScore(50);
+                        Debug.Log("HHHHHHHHHHHHHHHHHHHHH");
                     }
                 }
                 else if (gameObject.name.Contains("Plant2"))
