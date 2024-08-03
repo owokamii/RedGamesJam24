@@ -115,8 +115,11 @@ public class SpriteChanger : MonoBehaviour
                 yield break;
             }
 
-            spriteRenderer.sprite = spritesToChange[i];
-            pullableComponent.UpdateCurrentSpriteIndex(i);
+            if (obj != null)
+            {
+                spriteRenderer.sprite = spritesToChange[i];
+                pullableComponent.UpdateCurrentSpriteIndex(i);
+            }
         }
 
         int spawnPointIndex = GetSpawnPointIndex(obj);
