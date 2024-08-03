@@ -1,5 +1,4 @@
 using System.Collections;
-using UnityEditor;
 using UnityEngine;
 
 public class AI : MonoBehaviour
@@ -19,24 +18,29 @@ public class AI : MonoBehaviour
     private void Start()
     {
         draggable = GetComponent<Draggable>();
-
         ChooseNewDirection();
     }
 
     private void Update()
     {
-        if (isMoving)
-        {
-            MoveInDirection();
-        }
-
         if (draggable.isGrounded)
         {
-            isMoving = true;
+            if (isMoving)
+            {
+                MoveInDirection();
+            }
+            else
+            {
+                // Check if idle time is over to start moving again
+                if (idleTime <= 0)
+                {
+                    ChooseNewDirection();
+                }
+            }
         }
         else
         {
-            isMoving = false;
+            isMoving = false;  // Stop moving when not grounded
         }
     }
 
@@ -47,10 +51,7 @@ public class AI : MonoBehaviour
         roamTime -= Time.deltaTime;
         if (roamTime <= 0)
         {
-            if(isMoving)
-            {
-                StartCoroutine(Idle());
-            }
+            StartCoroutine(Idle());
         }
     }
 
@@ -67,7 +68,7 @@ public class AI : MonoBehaviour
         isMoving = true;
         roamTime = Random.Range(minRoamTime, maxRoamTime);
 
-        int randomDirection = Random.Range(0, 4);
+        int randomDirection = Random.Range(0, 2);
         switch (randomDirection)
         {
             case 0:
@@ -76,12 +77,12 @@ public class AI : MonoBehaviour
             case 1:
                 direction = Vector2.right;
                 break;
-            case 2:
-                    direction = Vector2.up;
-                break;
-            case 3:
-                direction = Vector2.down;
-                break;
+                /*case 2:
+                        direction = Vector2.up;
+                    break;
+                case 3:
+                    direction = Vector2.down;
+                    break;*/
         }
     }
 }
