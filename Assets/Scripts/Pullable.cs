@@ -1,3 +1,4 @@
+using UnityEditor.Rendering.LookDev;
 using UnityEngine;
 
 public class Pullable : MonoBehaviour
@@ -13,15 +14,15 @@ public class Pullable : MonoBehaviour
     public bool isMoving;
     public bool isBeingDragged;
     public bool isDestroyed;
-    private bool hasScored; // 标志对象是否已经计算过分数
+    private bool hasScored;
 
     private SpriteChanger spriteChanger;
     private RandomSpawner randomSpawner;
     private Sprite[] currentSprites;
     public int currentSpriteIndex;
-    private Sprite initialSprite; // 保存初始 Sprite
-    private int spawnPointIndex; // 记录生成点索引
-    public float remainingDestroyTime = -1f; // 剩余销毁时间
+    private Sprite initialSprite;
+    private int spawnPointIndex;
+    public float remainingDestroyTime = -1f;
 
     private void Start()
     {
@@ -30,16 +31,18 @@ public class Pullable : MonoBehaviour
         spriteChanger = FindObjectOfType<SpriteChanger>();
         randomSpawner = FindObjectOfType<RandomSpawner>();
 
-        // 获取初始 Sprite
         SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
         if (spriteRenderer != null)
         {
             initialSprite = spriteRenderer.sprite;
         }
 
-        // 获取生成点索引
         spawnPointIndex = GetSpawnPointIndex();
+
+        // Example of setting current sprites, you should replace someSpriteArray with your actual sprite array
+        SetCurrentSprites(spriteChanger.plantSprites, 0);
     }
+
 
     private void Update()
     {
@@ -90,13 +93,12 @@ public class Pullable : MonoBehaviour
 
             transform.localScale = newScale;
 
-            // 完成拉伸
             if (newScale.y >= initialScale.y * maxStretchScale)
             {
                 FindObjectOfType<AudioManager>().PlaySFX("POP");
                 isMoving = true;
                 capsuleCollider.enabled = false;
-                spriteChanger.StopCoroutineForObject(gameObject); // 停止更换Sprite的协程
+                spriteChanger.StopCoroutineForObject(gameObject);
                 ResetScale();
             }
         }
@@ -109,30 +111,19 @@ public class Pullable : MonoBehaviour
 
     private void StopObject()
     {
-        if (!hasScored) // 确保每个对象只会计算一次分数
+        if (!hasScored)
         {
             CheckPlantStatus();
             hasScored = true;
         }
-        DestroyAndReset(); // 立即销毁对象并重置生成点
-    }
-
-    private void ShrinkObject()
-    {
-        transform.localScale -= Vector3.one * shrinkSpeed * Time.deltaTime;
-
-        if (transform.localScale.x < 0 || transform.localScale.y < 0 || transform.localScale.z < 0)
-        {
-            transform.localScale = Vector3.zero;
-            isDestroyed = true;
-            DestroyAndReset(); // 销毁对象并重置生成点
-        }
+        DestroyAndReset();
     }
 
     private void DestroyAndReset()
     {
         if (spawnPointIndex != -1 && randomSpawner != null)
         {
+            spriteChanger.CheckingColliderEnter();
             randomSpawner.ResetSpawnPoint(spawnPointIndex);
         }
         Destroy(gameObject);
@@ -157,12 +148,12 @@ public class Pullable : MonoBehaviour
         return -1;
     }
 
+    //加进来新object资料
     public void CheckPlantStatus()
     {
         SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
         if (spriteRenderer != null && currentSprites != null && currentSpriteIndex >= 0 && currentSpriteIndex < currentSprites.Length)
         {
-            // 确保只有在 Sprite 已经被更换时才会加分
             if (spriteRenderer.sprite != initialSprite)
             {
                 if (gameObject.name.Contains("Plant"))
@@ -170,21 +161,29 @@ public class Pullable : MonoBehaviour
                     if (currentSpriteIndex == 0)
                     {
                         GameManager.Instance.AddMoney(1);
+                        GameManager.Instance.AddScore(100);
+                        Debug.Log("AAAAAAAAAAAAAAAAAAAAAA");
+                    }
+                    else if (currentSpriteIndex == 1)
+                    {
+                        GameManager.Instance.AddMoney(0);
                         GameManager.Instance.AddScore(50);
-                        Debug.Log("HHHHHHHHHHHHHHHHHHHHH");
+                        Debug.Log("BBBBBBBBBBBBBBBBBBBBB");
                     }
                 }
                 else if (gameObject.name.Contains("Plant2"))
                 {
-                    if (currentSpriteIndex == 1)
+                    if (currentSpriteIndex == 0)
+                    {
+                        GameManager.Instance.AddMoney(0);
+                        GameManager.Instance.AddScore(50);
+                        Debug.Log("CCCCCCCCCCCCCCCCCCCC");
+                    }
+                    else if (currentSpriteIndex == 1)
                     {
                         GameManager.Instance.AddMoney(1);
                         GameManager.Instance.AddScore(100);
-                    }
-                    else if (currentSpriteIndex == 2)
-                    {
-                        GameManager.Instance.AddMoney(0);
-                        GameManager.Instance.AddScore(25);
+                        Debug.Log("DDDDDDDDDDDDDDDDDDDD");
                     }
                 }
             }
@@ -195,5 +194,12 @@ public class Pullable : MonoBehaviour
     {
         currentSprites = sprites;
         currentSpriteIndex = startIndex;
+        Debug.Log("SetCurrentSprites called with startIndex: " + startIndex);
+    }
+
+    public void UpdateCurrentSpriteIndex(int newIndex)
+    {
+        currentSpriteIndex = newIndex;
+        Debug.Log($"Updated currentSpriteIndex to {currentSpriteIndex} for {gameObject.name}");
     }
 }

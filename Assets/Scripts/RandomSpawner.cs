@@ -47,7 +47,7 @@ public class RandomSpawner : MonoBehaviour
                 hasSpawned[spawnIndex] = true;
             }
 
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(1.0f);
         }
     }
 

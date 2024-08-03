@@ -27,14 +27,14 @@ public class GameManager : MonoBehaviour
     public void AddMoney(int amount)
     {
         coin += amount;
-        Debug.Log("Money: " + coin);
+        //Debug.Log("Money: " + coin);
         coinText.text = coin.ToString() + " coins";
     }
 
     public void AddScore(int amount)
     {
         score += amount;
-        Debug.Log("Score: " + score);
+        //Debug.Log("Score: " + score);
         scoreText.text = score.ToString() + " score";
     }
 }

@@ -8,6 +8,7 @@ public class SpriteChanger : MonoBehaviour
 
     private Dictionary<GameObject, Coroutine> activeCoroutines = new Dictionary<GameObject, Coroutine>();
     private RandomSpawner randomSpawner;
+    private bool IscolliderEnter = false;
 
     void Start()
     {
@@ -49,15 +50,22 @@ public class SpriteChanger : MonoBehaviour
                 if (spritesToChange != null)
                 {
                     Pullable pullableComponent = other.GetComponent<Pullable>();
-                    pullableComponent.SetCurrentSprites(spritesToChange, 0);
-                    Coroutine coroutine = StartCoroutine(ChangeSpriteOverTime(other.gameObject, spritesToChange, 0));
-                    activeCoroutines.Add(other.gameObject, coroutine);
+                    if (pullableComponent != null)
+                    {
+                        if (IscolliderEnter)
+                        {
+                            pullableComponent.SetCurrentSprites(spritesToChange, 0);
+                            IscolliderEnter = true;
+                        }
+                        Coroutine coroutine = StartCoroutine(ChangeSpriteOverTime(other.gameObject, spritesToChange, 0));
+                        activeCoroutines.Add(other.gameObject, coroutine);
+                    }
                 }
             }
         }
     }
 
-    //如果有新的spawnobject就加进来
+    //如果有新object加进来这里
     Sprite[] GetSpritesForObject(GameObject obj)
     {
         if (obj.name.Contains("Plant"))
@@ -106,24 +114,19 @@ public class SpriteChanger : MonoBehaviour
             {
                 yield break;
             }
-            if (pullableComponent.isBeingDragged && i == spritesToChange.Length - 1)
-            {
-                break;
-            }
 
             spriteRenderer.sprite = spritesToChange[i];
-            pullableComponent.currentSpriteIndex = i;
+            pullableComponent.UpdateCurrentSpriteIndex(i);
         }
 
         int spawnPointIndex = GetSpawnPointIndex(obj);
-        Debug.Log($"GetSpawnPointIndex returned {spawnPointIndex} for {obj.name}");
         if (spawnPointIndex != -1 && randomSpawner != null)
         {
             for (float timer = 1f; timer > 0; timer -= Time.deltaTime)
             {
                 if (pullableComponent.isDestroyed || pullableComponent.isBeingDragged || pullableComponent.isMoving)
                 {
-                    pullableComponent.remainingDestroyTime = timer; // 记录剩余销毁时间
+                    pullableComponent.remainingDestroyTime = timer;
                     yield break;
                 }
                 yield return null;
@@ -131,6 +134,7 @@ public class SpriteChanger : MonoBehaviour
 
             if (!pullableComponent.isDestroyed && !pullableComponent.isBeingDragged && !pullableComponent.isMoving)
             {
+                CheckingColliderEnter();
                 Destroy(obj);
                 activeCoroutines.Remove(obj);
             }
@@ -139,7 +143,7 @@ public class SpriteChanger : MonoBehaviour
             {
                 if (pullableComponent.isDestroyed || pullableComponent.isBeingDragged || pullableComponent.isMoving)
                 {
-                    pullableComponent.remainingDestroyTime = timer; // 记录剩余销毁时间
+                    pullableComponent.remainingDestroyTime = timer;
                     yield break;
                 }
                 yield return null;
@@ -158,7 +162,6 @@ public class SpriteChanger : MonoBehaviour
         Pullable pullableComponent = obj.GetComponent<Pullable>();
         if (pullableComponent != null && pullableComponent.remainingDestroyTime > 0)
         {
-            // 重新启动协程并从剩余的销毁时间继续
             StartCoroutine(ResumeDestroyAfterDelay(obj, pullableComponent.remainingDestroyTime));
         }
         else
@@ -186,6 +189,7 @@ public class SpriteChanger : MonoBehaviour
             int spawnPointIndex = GetSpawnPointIndex(obj);
             if (spawnPointIndex != -1 && randomSpawner != null)
             {
+                CheckingColliderEnter();
                 Destroy(obj);
                 activeCoroutines.Remove(obj);
                 randomSpawner.ResetSpawnPoint(spawnPointIndex);
@@ -200,5 +204,10 @@ public class SpriteChanger : MonoBehaviour
             StopCoroutine(activeCoroutines[obj]);
             activeCoroutines.Remove(obj);
         }
+    }
+
+    public void CheckingColliderEnter()
+    {
+        IscolliderEnter = false;
     }
 }
