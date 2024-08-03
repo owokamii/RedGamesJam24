@@ -46,11 +46,14 @@ public class RandomSpawner : MonoBehaviour
                     int prefabIndex = Random.Range(0, currentPrefabsToSpawn.Length);
                     GameObject prefabToSpawn = currentPrefabsToSpawn[prefabIndex];
 
-                    Vector3 spawnPosition = spawnPoints[spawnIndex].transform.position + spawnOffset;
-                    GameObject spawnedObject = Instantiate(prefabToSpawn, spawnPosition, Quaternion.identity);
-                    spawnedObject.name = prefabToSpawn.name;
+                    if (spawnPoints[spawnIndex] != null)
+                    {
+                        Vector3 spawnPosition = spawnPoints[spawnIndex].transform.position + spawnOffset;
+                        GameObject spawnedObject = Instantiate(prefabToSpawn, spawnPosition, Quaternion.identity);
+                        spawnedObject.name = prefabToSpawn.name;
 
-                    hasSpawned[spawnIndex] = true;
+                        hasSpawned[spawnIndex] = true;
+                    }
                 }
             }
 

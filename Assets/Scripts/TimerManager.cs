@@ -1,11 +1,14 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class TimerManager : MonoBehaviour
 {
-    public float countdownTime = 60f;
+    public float countdownTime = 10f;
     public TextMeshProUGUI countdownText;
+    public Button actionButton;
+    public string sceneToLoad; // 设置要加载的场景名称
 
     private float currentTime;
     private bool timerRunning = true;
@@ -13,6 +16,7 @@ public class TimerManager : MonoBehaviour
     private void Start()
     {
         currentTime = countdownTime;
+        actionButton.gameObject.SetActive(false);
     }
 
     private void Update()
@@ -34,10 +38,7 @@ public class TimerManager : MonoBehaviour
     private void OnTimerEnd()
     {
         Time.timeScale = 0;
-
-        SceneManager.LoadScene("Home");
-
-        Time.timeScale = 1;
+        actionButton.gameObject.SetActive(true);
     }
 
     private void DisplayTime(float timeToDisplay)
@@ -49,9 +50,35 @@ public class TimerManager : MonoBehaviour
 
     public void ResumeGame()
     {
-        // 恢复游戏中的活动
         Time.timeScale = 1;
         timerRunning = true;
         currentTime = countdownTime;
+        actionButton.gameObject.SetActive(false);
+        SceneManager.LoadScene("Home");
+    }
+
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.name == "Home")
+        {
+            ResetTimer();
+        }
+    }
+
+    private void ResetTimer()
+    {
+        currentTime = countdownTime;
+        timerRunning = true;
+        actionButton.gameObject.SetActive(false);
     }
 }

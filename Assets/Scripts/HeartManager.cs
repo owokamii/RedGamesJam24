@@ -1,8 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine.SceneManagement;
 using UnityEngine;
-using UnityEngine.SocialPlatforms;
+using UnityEngine.SceneManagement;
 
 public class HeartManager : MonoBehaviour
 {
@@ -15,7 +14,9 @@ public class HeartManager : MonoBehaviour
     private float nextRegenTime;
     private const string HeartsKey = "CurrentHearts";
     private const string RegenTimeKey = "NextRegenTime";
-    private bool isHeartObjectsInitialized = false;
+    private bool isHeartObjectsInitialized = true;
+    private Coroutine regenCoroutine;
+    private bool IsHealing = false;
 
     private void Awake()
     {
@@ -24,20 +25,27 @@ public class HeartManager : MonoBehaviour
 
     private void Start()
     {
-        Time.timeScale = 1;
         LoadHeartData();
-        StartCoroutine(HeartRegenRoutine());
         SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    public void Update()
+    {
+
     }
 
     public void UseHeart()
     {
         if (currentHearts > 0)
         {
+            Debug.Log("Using heart. Current hearts before usage: " + currentHearts);
             currentHearts--;
-            nextRegenTime = Time.time + 70f;
             SaveHeartData();
             UpdateHeartsUI();
+            if (currentHearts < maxHearts && !IsHealing)
+            {
+                StartHeartRegenRoutine();
+            }
         }
         else
         {
@@ -45,43 +53,64 @@ public class HeartManager : MonoBehaviour
         }
     }
 
+    private void StartHeartRegenRoutine()
+    {
+        if (regenCoroutine == null)
+        {
+            IsHealing = true;
+            nextRegenTime = Time.time + 30f;
+            regenCoroutine = StartCoroutine(HeartRegenRoutine());
+        }
+    }
+
     private IEnumerator HeartRegenRoutine()
     {
-        while (true)
+        while (currentHearts < maxHearts)
         {
-            if (currentHearts < maxHearts)
+            float remainingTime = nextRegenTime - Time.time;
+            if (remainingTime <= 0)
             {
-                float remainingTime = nextRegenTime - Time.time;
-                if (remainingTime <= 0)
+                Debug.Log("Regenerating heart. Current hearts before regen: " + currentHearts);
+                currentHearts++;
+                SaveHeartData();
+                UpdateHeartsUI();
+
+                if (currentHearts < maxHearts)
                 {
-                    currentHearts++;
-                    nextRegenTime = Time.time + 70f;
-                    SaveHeartData();
-                    UpdateHeartsUI();
+                    nextRegenTime = Time.time + 30f;
                 }
                 else
                 {
-                    Debug.Log($"Time until next heart recovery: {remainingTime:F2} seconds");
+                    regenCoroutine = null;
+                    IsHealing = false;
+                    yield break;
                 }
             }
-            yield return new WaitForSeconds(1f); // 每秒检查一次
+            else
+            {
+                yield return new WaitForSeconds(remainingTime);
+            }
         }
     }
 
     private void UpdateHeartsUI()
     {
-        if (!isHeartObjectsInitialized)
-            return;
+        //if (!isHeartObjectsInitialized)
+        //    return;
 
+        Debug.Log("Updating hearts UI. Current hearts: " + currentHearts);
         for (int i = 0; i < heartObjects.Count; i++)
         {
-            if (i < currentHearts)
+            if (heartObjects[i] != null)
             {
-                heartObjects[i].sprite = fullHeart;
-            }
-            else
-            {
-                heartObjects[i].sprite = emptyHeart;
+                if (i < currentHearts)
+                {
+                    heartObjects[i].sprite = fullHeart;
+                }
+                else
+                {
+                    heartObjects[i].sprite = emptyHeart;
+                }
             }
         }
     }
@@ -95,6 +124,7 @@ public class HeartManager : MonoBehaviour
     {
         PlayerPrefs.SetInt(HeartsKey, currentHearts);
         PlayerPrefs.SetFloat(RegenTimeKey, nextRegenTime - Time.time + GetCurrentUnixTimestamp());
+        Debug.Log("Saving heart data. Current hearts: " + currentHearts + ", next regen time: " + nextRegenTime);
     }
 
     private void LoadHeartData()
@@ -105,16 +135,30 @@ public class HeartManager : MonoBehaviour
             float savedRegenTime = PlayerPrefs.GetFloat(RegenTimeKey);
             nextRegenTime = savedRegenTime - GetCurrentUnixTimestamp() + Time.time;
 
-            float elapsedTime = Time.time - nextRegenTime + 10f;
+            float elapsedTime = GetCurrentUnixTimestamp() - savedRegenTime;
 
-            int heartsToRegen = Mathf.FloorToInt(elapsedTime / 10f);
+            int heartsToRegen = Mathf.FloorToInt(elapsedTime / 30f);
             currentHearts = Mathf.Min(currentHearts + heartsToRegen, maxHearts);
-            nextRegenTime = Time.time + (10f - (elapsedTime % 10f));
+
+            if (currentHearts < maxHearts)
+            {
+                float remainingTimeToNextRegen = 30f - (elapsedTime % 30f);
+                nextRegenTime = Time.time + remainingTimeToNextRegen;
+                StartHeartRegenRoutine();
+            }
+            else
+            {
+                nextRegenTime = Time.time + 30f;
+            }
+
+            Debug.Log("Loaded heart data. Current hearts: " + currentHearts + ", next regen time: " + nextRegenTime);
+            UpdateHeartsUI();
         }
         else
         {
             currentHearts = maxHearts;
-            nextRegenTime = Time.time + 10f;
+            nextRegenTime = Time.time + 30f;
+            Debug.Log("No saved heart data. Setting current hearts to max: " + maxHearts);
         }
     }
 
@@ -126,15 +170,12 @@ public class HeartManager : MonoBehaviour
     public void OnButtonClick()
     {
         UseHeart();
-        SceneManager.LoadScene("Yvonne");
+        //SceneManager.LoadScene("Yvonne");
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (scene.name == "Home")
-        {
-            InitializeHeartObjects();
-        }
+        InitializeHeartObjects();
     }
 
     private void InitializeHeartObjects()
