@@ -96,8 +96,11 @@ public class SpriteChanger : MonoBehaviour
             }
 
             yield return new WaitForSeconds(2);
-            spriteRenderer.sprite = spritesToChange[i];
-            pullableComponent.currentSpriteIndex = i; // 更新当前的 Sprite 索引
+            if(spriteRenderer != null)
+            {
+                spriteRenderer.sprite = spritesToChange[i];
+                pullableComponent.currentSpriteIndex = i; // 更新当前的 Sprite 索引
+            }
         }
 
         int spawnPointIndex = GetSpawnPointIndex(obj);

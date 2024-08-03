@@ -1,11 +1,15 @@
 using UnityEngine;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
-    public int money;
-    public int score;
+    [SerializeField] private TMP_Text coinText;
+    [SerializeField] private TMP_Text scoreText;
+
+    private int coin;
+    private int score;
 
     private void Awake()
     {
@@ -22,8 +26,8 @@ public class GameManager : MonoBehaviour
 
     public void AddMoney(int amount)
     {
-        money += amount;
-        Debug.Log("Money: " + money);
+        coin += amount;
+        Debug.Log("Money: " + coin);
     }
 
     public void AddScore(int amount)
