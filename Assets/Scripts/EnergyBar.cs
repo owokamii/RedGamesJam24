@@ -1,14 +1,11 @@
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 using TMPro;
+using UnityEngine.SceneManagement;
 using System;
 
 public class PersistentEnergyBar : MonoBehaviour
 {
-    public string energyBarName = "EneegyBorder";
     public string textMeshProButtonName = "textPersian";
-    private Slider energyBar;
     private TextMeshProUGUI textPersian;
     private float currentEnergy;
     private const float energyDrain = 0.5f;
@@ -24,37 +21,26 @@ public class PersistentEnergyBar : MonoBehaviour
         InvokeRepeating("RegenerateEnergy", regenInterval, regenInterval);
         SceneManager.sceneLoaded += OnSceneLoaded;
 
-        FindEnergyBarAndText();
+        FindTextMeshPro();
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        FindEnergyBarAndText();
+        FindTextMeshPro();
     }
 
-    private void FindEnergyBarAndText()
+    private void FindTextMeshPro()
     {
-        GameObject energyBarObject = GameObject.Find(energyBarName);
         GameObject textMeshProButtonObject = GameObject.Find(textMeshProButtonName);
-
-        if (energyBarObject != null)
-        {
-            energyBar = energyBarObject.GetComponent<Slider>();
-            energyBar.value = currentEnergy;
-        }
-        else
-        {
-            Debug.LogWarning("Slider GameObject not found by name in the current scene");
-        }
 
         if (textMeshProButtonObject != null)
         {
             textPersian = textMeshProButtonObject.GetComponent<TextMeshProUGUI>();
-            UpdateTextMeshProButton();
+            UpdateTextMeshPro();
         }
         else
         {
-            Debug.LogWarning("TextMeshPro Button GameObject not found by name in the current scene");
+            Debug.LogWarning("TextMeshPro GameObject not found by name in the current scene");
         }
     }
 
@@ -64,15 +50,7 @@ public class PersistentEnergyBar : MonoBehaviour
         currentEnergy -= energyDrain;
         if (currentEnergy < 0) currentEnergy = 0;
 
-        if (energyBar != null)
-        {
-            energyBar.value = currentEnergy;
-        }
-
-        if (textPersian != null)
-        {
-            UpdateTextMeshProButton();
-        }
+        UpdateTextMeshPro();
 
         PlayerPrefs.SetFloat("CurrentEnergy", currentEnergy);
         PlayerPrefs.SetString("LastSaveTime", DateTime.Now.ToString());
@@ -84,15 +62,7 @@ public class PersistentEnergyBar : MonoBehaviour
         currentEnergy += energyRegenRate;
         if (currentEnergy > 1) currentEnergy = 1;
 
-        if (energyBar != null)
-        {
-            energyBar.value = currentEnergy;
-        }
-
-        if (textPersian != null)
-        {
-            UpdateTextMeshProButton();
-        }
+        UpdateTextMeshPro();
 
         PlayerPrefs.SetFloat("CurrentEnergy", currentEnergy);
         PlayerPrefs.SetString("LastSaveTime", DateTime.Now.ToString());
@@ -111,11 +81,11 @@ public class PersistentEnergyBar : MonoBehaviour
         if (currentEnergy > 1) currentEnergy = 1;
     }
 
-    private void UpdateTextMeshProButton()
+    private void UpdateTextMeshPro()
     {
         if (textPersian != null)
         {
-            textPersian.text = $"Energy: {currentEnergy * 100}%";
+            textPersian.text = $"Energy: {Mathf.RoundToInt(currentEnergy * 100)}%";
         }
     }
 

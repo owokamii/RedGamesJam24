@@ -8,7 +8,7 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private string coinTextObjectName = "CoinText";
     [SerializeField] private string scoreTextObjectName = "ScoreText";
-    [SerializeField] private string totalCoinsPrefKey = "TotalCoins"; // 用于PlayerPrefs的键
+    [SerializeField] private string totalCoinsPrefKey = "TotalCoins";
 
     private TMP_Text coinText;
     private TMP_Text scoreText;
