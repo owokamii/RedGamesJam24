@@ -90,33 +90,40 @@ public class SpriteChanger : MonoBehaviour
 
         for (int i = startIndex; i < spritesToChange.Length; i++)
         {
+            if (pullableComponent.isDestroyed)
+            {
+                yield break;
+            }
+
             while (pullableComponent.isBeingDragged || pullableComponent.isMoving)
             {
-                yield return null; // 等待直到拖拽结束或移动完成
+                yield return null;
             }
 
             yield return new WaitForSeconds(2);
-            if(spriteRenderer != null)
+            if (pullableComponent.isDestroyed || pullableComponent.isMoving)
             {
-                spriteRenderer.sprite = spritesToChange[i];
-                pullableComponent.currentSpriteIndex = i; // 更新当前的 Sprite 索引
+                yield break;
             }
+
+            spriteRenderer.sprite = spritesToChange[i];
+            pullableComponent.currentSpriteIndex = i;
         }
 
         int spawnPointIndex = GetSpawnPointIndex(obj);
-        //Debug.Log($"GetSpawnPointIndex returned {spawnPointIndex} for {obj.name}");
+        Debug.Log($"GetSpawnPointIndex returned {spawnPointIndex} for {obj.name}");
         if (spawnPointIndex != -1 && randomSpawner != null)
         {
             for (float timer = 1f; timer > 0; timer -= Time.deltaTime)
             {
-                if (pullableComponent.isBeingDragged || pullableComponent.isMoving)
+                if (pullableComponent.isDestroyed || pullableComponent.isBeingDragged || pullableComponent.isMoving)
                 {
-                    yield return null;
+                    yield break;
                 }
                 yield return null;
             }
 
-            if (!pullableComponent.isBeingDragged && !pullableComponent.isMoving)
+            if (!pullableComponent.isDestroyed && !pullableComponent.isBeingDragged && !pullableComponent.isMoving)
             {
                 pullableComponent.CheckPlantStatus();
                 Destroy(obj);
@@ -125,16 +132,16 @@ public class SpriteChanger : MonoBehaviour
 
             for (float timer = 2f; timer > 0; timer -= Time.deltaTime)
             {
-                if (pullableComponent.isBeingDragged || pullableComponent.isMoving)
+                if (pullableComponent.isDestroyed || pullableComponent.isBeingDragged || pullableComponent.isMoving)
                 {
-                    yield return null;
+                    yield break;
                 }
                 yield return null;
             }
 
-            if (!pullableComponent.isBeingDragged && !pullableComponent.isMoving)
+            if (!pullableComponent.isDestroyed && !pullableComponent.isBeingDragged && !pullableComponent.isMoving)
             {
-               // Debug.Log("Resetting spawn point at index: " + spawnPointIndex);
+                Debug.Log("Resetting spawn point at index: " + spawnPointIndex);
                 randomSpawner.ResetSpawnPoint(spawnPointIndex);
             }
         }
@@ -151,6 +158,15 @@ public class SpriteChanger : MonoBehaviour
         {
             Coroutine coroutine = StartCoroutine(ChangeSpriteOverTime(obj, spritesToChange, startIndex));
             activeCoroutines.Add(obj, coroutine);
+        }
+    }
+
+    public void StopCoroutineForObject(GameObject obj)
+    {
+        if (activeCoroutines.ContainsKey(obj))
+        {
+            StopCoroutine(activeCoroutines[obj]);
+            activeCoroutines.Remove(obj);
         }
     }
 }

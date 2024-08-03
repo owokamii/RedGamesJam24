@@ -12,6 +12,7 @@ public class Pullable : MonoBehaviour
     private Vector3 initialScale;
     public bool isMoving;
     public bool isBeingDragged;
+    public bool isDestroyed; // 标志对象是否已被销毁
 
     private SpriteChanger spriteChanger;
     private Sprite[] currentSprites;
@@ -78,6 +79,7 @@ public class Pullable : MonoBehaviour
             {
                 isMoving = true;
                 capsuleCollider.enabled = false;
+                spriteChanger.StopCoroutineForObject(gameObject); // 停止更换Sprite的协程
                 ResetScale();
             }
         }
@@ -101,6 +103,7 @@ public class Pullable : MonoBehaviour
         {
             transform.localScale = Vector3.zero;
             CheckPlantStatus();
+            isDestroyed = true; // 设置标志位，表示对象已被销毁
             Destroy(gameObject);
         }
     }
