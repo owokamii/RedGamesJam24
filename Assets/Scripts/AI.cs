@@ -8,6 +8,7 @@ public class AI : MonoBehaviour
     [SerializeField] private float maxDistance;
     [SerializeField] private bool isFacingRight;
     [SerializeField] private float pauseDuration; // Duration of the pause at each destination
+    [SerializeField] private Rigidbody2D rb;
 
     private Vector2 waypoint;
     private SpriteRenderer spriteRenderer;
@@ -16,6 +17,7 @@ public class AI : MonoBehaviour
     private void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
+        rb = GetComponent<Rigidbody2D>();
         SetNewDestination();
     }
 
