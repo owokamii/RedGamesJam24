@@ -100,7 +100,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetTransform: {fileID: 0}
-  maxStretchScale: 2
+  maxStretchScale: 1.5
   shrinkSpeed: 3
   moveSpeed: 10
   isMoving: 0
