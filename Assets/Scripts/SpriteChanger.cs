@@ -5,6 +5,8 @@ using UnityEngine;
 public class SpriteChanger : MonoBehaviour
 {
     public Sprite[] plantSprites;
+    public Sprite[] plantSprites2;
+    public Sprite[] plantSprites3;
 
     private Dictionary<GameObject, Coroutine> activeCoroutines = new Dictionary<GameObject, Coroutine>();
     private RandomSpawner randomSpawner;
@@ -68,12 +70,26 @@ public class SpriteChanger : MonoBehaviour
     //如果有新object加进来这里
     Sprite[] GetSpritesForObject(GameObject obj)
     {
+        Debug.Log("GetSpritesForObject called for: " + obj.name);
+
         if (obj.name.Contains("Plant"))
         {
+            Debug.Log("Returning plantSprites for: " + obj.name);
             return plantSprites;
+        }
+        else if (obj.name.Contains("Circle"))
+        {
+            Debug.Log("Returning plantSprites2 for: " + obj.name);
+            return plantSprites2;
+        }
+        else if (obj.name.Contains("Plant3"))
+        {
+            Debug.Log("Returning plantSprites3 for: " + obj.name);
+            return plantSprites3;
         }
         else
         {
+            Debug.Log("No sprites found for: " + obj.name);
             return null;
         }
     }
@@ -154,7 +170,7 @@ public class SpriteChanger : MonoBehaviour
 
             if (!pullableComponent.isDestroyed && !pullableComponent.isBeingDragged && !pullableComponent.isMoving)
             {
-                Debug.Log("Resetting spawn point at index: " + spawnPointIndex);
+                //Debug.Log("Resetting spawn point at index: " + spawnPointIndex);
                 randomSpawner.ResetSpawnPoint(spawnPointIndex);
             }
         }

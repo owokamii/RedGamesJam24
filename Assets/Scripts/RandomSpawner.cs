@@ -4,7 +4,10 @@ using UnityEngine;
 
 public class RandomSpawner : MonoBehaviour
 {
-    public GameObject[] prefabsToSpawn;
+    public GameObject[] prefabsToSpawnLevel1;
+    public GameObject[] prefabsToSpawnLevel2;
+    public GameObject[] prefabsToSpawnLevel3;
+
     public GameObject[] spawnPoints;
     public Vector3 spawnOffset;
     private bool[] hasSpawned;
@@ -37,17 +40,38 @@ public class RandomSpawner : MonoBehaviour
                 int randomIndex = Random.Range(0, availablePoints.Count);
                 int spawnIndex = availablePoints[randomIndex];
 
-                int prefabIndex = Random.Range(0, prefabsToSpawn.Length);
-                GameObject prefabToSpawn = prefabsToSpawn[prefabIndex];
+                GameObject[] currentPrefabsToSpawn = GetPrefabsForCurrentLevel();
+                if (currentPrefabsToSpawn.Length > 0)
+                {
+                    int prefabIndex = Random.Range(0, currentPrefabsToSpawn.Length);
+                    GameObject prefabToSpawn = currentPrefabsToSpawn[prefabIndex];
 
-                Vector3 spawnPosition = spawnPoints[spawnIndex].transform.position + spawnOffset;
-                GameObject spawnedObject = Instantiate(prefabToSpawn, spawnPosition, Quaternion.identity);
-                spawnedObject.name = prefabToSpawn.name;
+                    Vector3 spawnPosition = spawnPoints[spawnIndex].transform.position + spawnOffset;
+                    GameObject spawnedObject = Instantiate(prefabToSpawn, spawnPosition, Quaternion.identity);
+                    spawnedObject.name = prefabToSpawn.name;
 
-                hasSpawned[spawnIndex] = true;
+                    hasSpawned[spawnIndex] = true;
+                }
             }
 
             yield return new WaitForSeconds(0.5f);
+        }
+    }
+
+    GameObject[] GetPrefabsForCurrentLevel()
+    {
+        int currentLevel = GameManager.Instance.GetCurrentLevel();
+        switch (currentLevel)
+        {
+            case 1:
+                return prefabsToSpawnLevel1;
+            case 2:
+                return prefabsToSpawnLevel2;
+            case 3:
+                return prefabsToSpawnLevel3;
+            // 添加更多关卡的情况
+            default:
+                return prefabsToSpawnLevel1; // 默认返回 Level 1 的生成对象
         }
     }
 

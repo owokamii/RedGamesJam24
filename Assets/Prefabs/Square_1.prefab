@@ -146,3 +146,7 @@ MonoBehaviour:
   plantSprites:
   - {fileID: 21300000, guid: d4476e89ab829e644ba3f5c9f1b60495, type: 3}
   - {fileID: 21300000, guid: 826378a3057e4b74f9ec318f8ca0715f, type: 3}
+  plantSprites2:
+  - {fileID: 21300000, guid: ffbb0762ec0dee149b1a674a4814d04e, type: 3}
+  - {fileID: 21300000, guid: d4476e89ab829e644ba3f5c9f1b60495, type: 3}
+  plantSprites3: []

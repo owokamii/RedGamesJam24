@@ -161,16 +161,31 @@ public class Pullable : MonoBehaviour
                     {
                         GameManager.Instance.AddMoney(1);
                         GameManager.Instance.AddScore(100);
-                        Debug.Log("AAAAAAAAAAAAAAAAAAAAAA");
+                        //Debug.Log("AAAAAAAAAAAAAAAAAAAAAA");
                     }
                     else if (currentSpriteIndex == 1)
                     {
                         GameManager.Instance.AddMoney(0);
                         GameManager.Instance.AddScore(50);
-                        Debug.Log("BBBBBBBBBBBBBBBBBBBBB");
+                        //Debug.Log("BBBBBBBBBBBBBBBBBBBBB");
                     }
                 }
-                else if (gameObject.name.Contains("Plant2"))
+                else if (gameObject.name.Contains("Circle"))
+                {
+                    if (currentSpriteIndex == 0)
+                    {
+                        GameManager.Instance.AddMoney(0);
+                        GameManager.Instance.AddScore(50);
+                        Debug.Log("CCCCCCCCCCCCCCCCCCCC");
+                    }
+                    else if (currentSpriteIndex == 1)
+                    {
+                        GameManager.Instance.AddMoney(1);
+                        GameManager.Instance.AddScore(100);
+                        Debug.Log("DDDDDDDDDDDDDDDDDDDD");
+                    }
+                }
+                else if (gameObject.name.Contains("Plant3"))
                 {
                     if (currentSpriteIndex == 0)
                     {
@@ -193,12 +208,12 @@ public class Pullable : MonoBehaviour
     {
         currentSprites = sprites;
         currentSpriteIndex = startIndex;
-        Debug.Log("SetCurrentSprites called with startIndex: " + startIndex);
+        //Debug.Log("SetCurrentSprites called with startIndex: " + startIndex);
     }
 
     public void UpdateCurrentSpriteIndex(int newIndex)
     {
         currentSpriteIndex = newIndex;
-        Debug.Log($"Updated currentSpriteIndex to {currentSpriteIndex} for {gameObject.name}");
+        //Debug.Log($"Updated currentSpriteIndex to {currentSpriteIndex} for {gameObject.name}");
     }
 }
