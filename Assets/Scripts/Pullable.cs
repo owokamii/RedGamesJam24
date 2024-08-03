@@ -15,34 +15,31 @@ public class Pullable : MonoBehaviour
     public bool isDestroyed;
     private bool hasScored;
 
-    private SpriteRenderer sp;
-    private SpriteChanger spriteChanger;
+    private Animator animator;
+    private GrowthStages growthStages;
+    private AnimationChanger animationChanger;
     private RandomSpawner randomSpawner;
-    private Sprite[] currentSprites;
-    public int currentSpriteIndex;
-    private Sprite initialSprite;
+    public string[] animationStages; // 确保定义了animationStages
+    public int currentAnimationStageIndex;
     private int spawnPointIndex;
     public float remainingDestroyTime = -1f;
-    public bool hasChangedSprite = false;
+    public bool hasChangedState = false;
 
     private void Start()
     {
         targetTransform = GameObject.FindGameObjectWithTag("Basket").transform;
         capsuleCollider = GetComponent<CapsuleCollider2D>();
-        spriteChanger = FindObjectOfType<SpriteChanger>();
+        animationChanger = FindObjectOfType<AnimationChanger>();
         randomSpawner = FindObjectOfType<RandomSpawner>();
-        sp = GetComponent<SpriteRenderer>();
-
-        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
-        if (spriteRenderer != null)
-        {
-            initialSprite = spriteRenderer.sprite;
-        }
+        animator = GetComponent<Animator>();
+        growthStages = GetComponent<GrowthStages>();
 
         spawnPointIndex = GetSpawnPointIndex();
 
-        // Example of setting current sprites, you should replace someSpriteArray with your actual sprite array
-        SetCurrentSprites(spriteChanger.plantSprites, 0);
+        // 确保初始化animationStages
+        animationStages = new string[] { "Stage1", "Stage2", "Stage3" };
+
+        SetCurrentAnimationStage(0);
     }
 
     private void Update()
@@ -74,9 +71,9 @@ public class Pullable : MonoBehaviour
     {
         isBeingDragged = false;
         ResetScale();
-        if (!hasChangedSprite)
+        if (!hasChangedState)
         {
-            spriteChanger.RestartCoroutine(gameObject, currentSprites, currentSpriteIndex);
+            animationChanger.RestartCoroutine(gameObject, growthStages.GetCurrentStage());
         }
     }
 
@@ -102,16 +99,14 @@ public class Pullable : MonoBehaviour
                 FindObjectOfType<AudioManager>().PlaySFX("POP");
                 isMoving = true;
                 capsuleCollider.enabled = false;
-                spriteChanger.StopCoroutineForObject(gameObject);
+                animationChanger.StopCoroutineForObject(gameObject);
                 ResetScale();
-                sp.sortingLayerName = "Default";
             }
         }
     }
 
     private void MoveObject()
     {
-
         transform.position = Vector3.MoveTowards(transform.position, targetTransform.position, moveSpeed * Time.deltaTime);
     }
 
@@ -119,7 +114,7 @@ public class Pullable : MonoBehaviour
     {
         if (!hasScored)
         {
-            CheckPlantStatus();
+            CheckAnimationStatus();
             hasScored = true;
         }
         ShrinkObject();
@@ -139,7 +134,7 @@ public class Pullable : MonoBehaviour
     {
         if (spawnPointIndex != -1 && randomSpawner != null)
         {
-            spriteChanger.CheckingColliderEnter();
+            animationChanger.CheckingColliderEnter();
             randomSpawner.ResetSpawnPoint(spawnPointIndex);
         }
         Destroy(gameObject);
@@ -164,72 +159,63 @@ public class Pullable : MonoBehaviour
         return -1;
     }
 
-    public void CheckPlantStatus()
+    public void CheckAnimationStatus()
     {
-        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
-        if (spriteRenderer != null && currentSprites != null && currentSpriteIndex >= 0 && currentSpriteIndex < currentSprites.Length)
+        int currentStage = growthStages.GetCurrentStage();
+        if (gameObject.name.Contains("Plant"))
         {
-            if (spriteRenderer.sprite != initialSprite)
+            if (currentStage == 0)
             {
-                if (gameObject.name.Contains("Plant"))
-                {
-                    if (currentSpriteIndex == 0)
-                    {
-                        GameManager.Instance.AddMoney(1);
-                        GameManager.Instance.AddScore(100);
-                        //Debug.Log("AAAAAAAAAAAAAAAAAAAAAA");
-                    }
-                    else if (currentSpriteIndex == 1)
-                    {
-                        GameManager.Instance.AddMoney(0);
-                        GameManager.Instance.AddScore(50);
-                        //Debug.Log("BBBBBBBBBBBBBBBBBBBBB");
-                    }
-                }
-                else if (gameObject.name.Contains("Circle"))
-                {
-                    if (currentSpriteIndex == 0)
-                    {
-                        GameManager.Instance.AddMoney(0);
-                        GameManager.Instance.AddScore(50);
-                        Debug.Log("CCCCCCCCCCCCCCCCCCCC");
-                    }
-                    else if (currentSpriteIndex == 1)
-                    {
-                        GameManager.Instance.AddMoney(1);
-                        GameManager.Instance.AddScore(100);
-                        Debug.Log("DDDDDDDDDDDDDDDDDDDD");
-                    }
-                }
-                else if (gameObject.name.Contains("Plant3"))
-                {
-                    if (currentSpriteIndex == 0)
-                    {
-                        GameManager.Instance.AddMoney(0);
-                        GameManager.Instance.AddScore(50);
-                        Debug.Log("CCCCCCCCCCCCCCCCCCCC");
-                    }
-                    else if (currentSpriteIndex == 1)
-                    {
-                        GameManager.Instance.AddMoney(1);
-                        GameManager.Instance.AddScore(100);
-                        Debug.Log("DDDDDDDDDDDDDDDDDDDD");
-                    }
-                }
+                GameManager.Instance.AddMoney(0);
+                GameManager.Instance.AddScore(0);
+            }
+            else if (currentStage == 1)
+            {
+                GameManager.Instance.AddMoney(1);
+                GameManager.Instance.AddScore(100);
+            }
+            else if (currentStage == 2)
+            {
+                GameManager.Instance.AddMoney(0);
+                GameManager.Instance.AddScore(50);
+            }
+        }
+        else if (gameObject.name.Contains("Circle"))
+        {
+            if (currentStage == 0)
+            {
+                GameManager.Instance.AddMoney(0);
+                GameManager.Instance.AddScore(50);
+            }
+            else if (currentStage == 1)
+            {
+                GameManager.Instance.AddMoney(1);
+                GameManager.Instance.AddScore(100);
+            }
+        }
+        else if (gameObject.name.Contains("Plant3"))
+        {
+            if (currentStage == 0)
+            {
+                GameManager.Instance.AddMoney(0);
+                GameManager.Instance.AddScore(50);
+            }
+            else if (currentStage == 1)
+            {
+                GameManager.Instance.AddMoney(1);
+                GameManager.Instance.AddScore(100);
             }
         }
     }
 
-    public void SetCurrentSprites(Sprite[] sprites, int startIndex)
+    public void SetCurrentAnimationStage(int stageIndex)
     {
-        currentSprites = sprites;
-        currentSpriteIndex = startIndex;
-        //Debug.Log("SetCurrentSprites called with startIndex: " + startIndex);
+        currentAnimationStageIndex = stageIndex;
+        animator.Play(animationStages[stageIndex]);
     }
 
-    public void UpdateCurrentSpriteIndex(int newIndex)
+    public void UpdateCurrentAnimationStage(int newIndex)
     {
-        currentSpriteIndex = newIndex;
-        //Debug.Log($"Updated currentSpriteIndex to {currentSpriteIndex} for {gameObject.name}");
+        currentAnimationStageIndex = newIndex;
     }
 }
