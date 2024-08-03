@@ -57,7 +57,7 @@ public class SpriteChanger : MonoBehaviour
         }
     }
 
-    //如果有新的spawnibject就加进来
+    //如果有新的spawnobject就加进来
     Sprite[] GetSpritesForObject(GameObject obj)
     {
         if (obj.name.Contains("Plant"))
@@ -105,6 +105,10 @@ public class SpriteChanger : MonoBehaviour
             if (pullableComponent.isDestroyed || pullableComponent.isMoving)
             {
                 yield break;
+            }
+            if (pullableComponent.isBeingDragged && i == spritesToChange.Length - 1)
+            {
+                break;
             }
 
             spriteRenderer.sprite = spritesToChange[i];
