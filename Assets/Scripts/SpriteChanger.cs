@@ -32,7 +32,7 @@ public class SpriteChanger : MonoBehaviour
             Vector3 spawnPointPosition = randomSpawner.spawnPoints[i].transform.position;
             float distance = Vector3.Distance(spawnPointPosition, objPosition);
 
-            if (distance < 0.5f)
+            if (distance < 0.6)
             {
                 return i;
             }
