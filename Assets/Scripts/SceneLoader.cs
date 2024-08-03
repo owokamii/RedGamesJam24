@@ -8,4 +8,11 @@ public class SceneLoader : MonoBehaviour
         Debug.Log(name);
         SceneManager.LoadScene(name);
     }
+
+    public void SetLevelNumber(int levelNumber)
+    {
+        Debug.Log("Setting level number to: " + levelNumber);
+
+        GameManager.Instance.SetCurrentLevel(levelNumber);
+    }
 }

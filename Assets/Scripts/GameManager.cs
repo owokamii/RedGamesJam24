@@ -101,6 +101,11 @@ public class GameManager : MonoBehaviour
         return currentLevel;
     }
 
+    public void SetCurrentLevel(int level)
+    {
+        currentLevel = level;
+    }
+
     public void AddMoney(int amount)
     {
         coin += amount;
