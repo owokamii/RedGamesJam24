@@ -33,7 +33,7 @@ public class HeartManager : MonoBehaviour
         if (currentHearts > 0)
         {
             currentHearts--;
-            nextRegenTime = Time.time + 10f;
+            nextRegenTime = Time.time + 70f;
             SaveHeartData();
             UpdateHeartsUI();
         }
@@ -47,14 +47,22 @@ public class HeartManager : MonoBehaviour
     {
         while (true)
         {
-            if (currentHearts < maxHearts && Time.time >= nextRegenTime)
+            if (currentHearts < maxHearts)
             {
-                currentHearts++;
-                nextRegenTime = Time.time + 10f;
-                SaveHeartData();
-                UpdateHeartsUI();
+                float remainingTime = nextRegenTime - Time.time;
+                if (remainingTime <= 0)
+                {
+                    currentHearts++;
+                    nextRegenTime = Time.time + 10f;
+                    SaveHeartData();
+                    UpdateHeartsUI();
+                }
+                else
+                {
+                    Debug.Log($"Time until next heart recovery: {remainingTime:F2} seconds");
+                }
             }
-            yield return null;
+            yield return new WaitForSeconds(1f); // 每秒检查一次
         }
     }
 
@@ -121,8 +129,7 @@ public class HeartManager : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        // 尝试重新获取心形对象
-        if (scene.name == "Home") // 替换为实际场景名称
+        if (scene.name == "Home")
         {
             InitializeHeartObjects();
         }
@@ -130,9 +137,8 @@ public class HeartManager : MonoBehaviour
 
     private void InitializeHeartObjects()
     {
-        // 重新获取心形对象的引用
         heartObjects.Clear();
-        GameObject[] heartGameObjects = GameObject.FindGameObjectsWithTag("HeartObject"); // 假设你的心形对象有 "HeartObject" 标签
+        GameObject[] heartGameObjects = GameObject.FindGameObjectsWithTag("HeartObject");
         foreach (GameObject heartGameObject in heartGameObjects)
         {
             SpriteRenderer sr = heartGameObject.GetComponent<SpriteRenderer>();
