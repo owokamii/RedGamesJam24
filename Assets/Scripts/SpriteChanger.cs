@@ -154,8 +154,9 @@
 //                else if (pullableComponent.hasChangedSprite && pullableComponent.isBeingDragged)
 //                {
 //                    yield break;
-                    
-//                }else
+
+//                }
+//                else
 //                {
 
 //                    spriteRenderer.sprite = spritesToChange[i];
