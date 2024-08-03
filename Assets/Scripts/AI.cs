@@ -9,7 +9,7 @@ public class AI : MonoBehaviour
     [SerializeField] private float minIdleTime = 0.5f;
     [SerializeField] private float maxIdleTime = 1.5f;
 
-    private Rigidbody2D rb;
+    //private Rigidbody2D rb;
     private Vector2 direction;
     public bool isMoving;
     private float roamTime;
@@ -17,7 +17,7 @@ public class AI : MonoBehaviour
 
     private void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
+        //rb = GetComponent<Rigidbody2D>();
 
         ChooseNewDirection();
     }
@@ -29,10 +29,10 @@ public class AI : MonoBehaviour
             MoveInDirection();
         }
 
-        if (rb.velocity.y < -5.0f)
+        /*if (rb.velocity.y < -5.0f)
         {
             rb.velocity = new Vector2(rb.velocity.x, -5.0f);
-        }
+        }*/
 
 
         Debug.Log(isMoving);

@@ -5,19 +5,19 @@ public class Draggable : MonoBehaviour
     [SerializeField] private Animator animator;
 
     private AI ai;
-    private Rigidbody2D rb;
+    //private Rigidbody2D rb;
     private Vector2 difference = Vector2.zero;
 
     private void Start()
     {
         ai = GetComponent<AI>();
         animator = GetComponent<Animator>();
-        rb = GetComponent<Rigidbody2D>();
+        //rb = GetComponent<Rigidbody2D>();
     }
 
     private void Update()
     {
-        Debug.Log(rb.velocity.y);
+        //Debug.Log(rb.velocity.y);
     }
 
     private void OnMouseDown()
