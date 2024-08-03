@@ -8,6 +8,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TMP_Text coinText;
     [SerializeField] private TMP_Text scoreText;
 
+    public int currentLevel = 1;
+
     private int coin;
     private int score;
 
@@ -22,6 +24,11 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
+
+    public int GetCurrentLevel()
+    {
+        return currentLevel;
     }
 
     public void AddMoney(int amount)

@@ -668,6 +668,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   coinText: {fileID: 1812727807}
   scoreText: {fileID: 1997348202}
+  currentLevel: 1
 --- !u!114 &704297023
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -680,8 +681,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a7144155c631f546b8f99c56c6ecb42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prefabsToSpawn:
+  prefabsToSpawnLevel1:
   - {fileID: 8513780044448661190, guid: 14fa39d55ae109945a9e2d2239ca9df0, type: 3}
+  - {fileID: 4962100318538037434, guid: 28515b63e84090841ae2a4ebd745eea0, type: 3}
+  prefabsToSpawnLevel2: []
+  prefabsToSpawnLevel3: []
   spawnPoints:
   - {fileID: 1187117117}
   - {fileID: 430649219}
