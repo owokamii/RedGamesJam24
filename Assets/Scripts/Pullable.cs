@@ -31,6 +31,7 @@ public class Pullable : MonoBehaviour
         capsuleCollider = GetComponent<CapsuleCollider2D>();
         spriteChanger = FindObjectOfType<SpriteChanger>();
         randomSpawner = FindObjectOfType<RandomSpawner>();
+        sp = GetComponent<SpriteRenderer>();
 
         SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
         if (spriteRenderer != null)
