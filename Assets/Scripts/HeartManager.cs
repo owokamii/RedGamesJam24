@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using UnityEngine;
+using UnityEngine.SocialPlatforms;
 
 public class HeartManager : MonoBehaviour
 {
@@ -23,6 +24,7 @@ public class HeartManager : MonoBehaviour
 
     private void Start()
     {
+        Time.timeScale = 1;
         LoadHeartData();
         StartCoroutine(HeartRegenRoutine());
         SceneManager.sceneLoaded += OnSceneLoaded;
@@ -53,7 +55,7 @@ public class HeartManager : MonoBehaviour
                 if (remainingTime <= 0)
                 {
                     currentHearts++;
-                    nextRegenTime = Time.time + 10f;
+                    nextRegenTime = Time.time + 70f;
                     SaveHeartData();
                     UpdateHeartsUI();
                 }
