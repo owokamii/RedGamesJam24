@@ -15,6 +15,7 @@ public class Pullable : MonoBehaviour
     public bool isDestroyed;
     private bool hasScored;
 
+    private SpriteRenderer sp;
     private SpriteChanger spriteChanger;
     private RandomSpawner randomSpawner;
     private Sprite[] currentSprites;
@@ -102,12 +103,14 @@ public class Pullable : MonoBehaviour
                 capsuleCollider.enabled = false;
                 spriteChanger.StopCoroutineForObject(gameObject);
                 ResetScale();
+                sp.sortingLayerName = "Default";
             }
         }
     }
 
     private void MoveObject()
     {
+
         transform.position = Vector3.MoveTowards(transform.position, targetTransform.position, moveSpeed * Time.deltaTime);
     }
 
