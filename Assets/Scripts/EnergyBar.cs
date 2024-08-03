@@ -5,7 +5,7 @@ using System;
 
 public class PersistentEnergyBar : MonoBehaviour
 {
-    public string textMeshProButtonName = "textPersian";
+    public string textMeshProButtonName = "Text";
     private TextMeshProUGUI textPersian;
     private float currentEnergy;
     private const float energyDrain = 0.5f;
