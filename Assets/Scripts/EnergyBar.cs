@@ -1,12 +1,14 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using System;
 
-public class PersistentEnergyBar : MonoBehaviour
+public class EnergyBar : MonoBehaviour
 {
     public string textMeshProButtonName = "Text";
-    private TextMeshProUGUI textPersian;
+    public string targetButtonName = "Button_Level";
+    private TextMeshProUGUI textMeshProButton;
     private float currentEnergy;
     private const float energyDrain = 0.5f;
     private const float energyRegenRate = 0.1f;
@@ -15,18 +17,23 @@ public class PersistentEnergyBar : MonoBehaviour
     private void Awake()
     {
         DontDestroyOnLoad(gameObject);
+        SceneManager.sceneLoaded += OnSceneLoaded;
+
         currentEnergy = PlayerPrefs.GetFloat("CurrentEnergy", 1f);
 
         RestoreEnergyFromLastSession();
-        InvokeRepeating("RegenerateEnergy", regenInterval, regenInterval);
-        SceneManager.sceneLoaded += OnSceneLoaded;
-
         FindTextMeshPro();
+        UpdateTextMeshPro();
+        InvokeRepeating("RegenerateEnergy", regenInterval, regenInterval);
+
+        BindButton();
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         FindTextMeshPro();
+        UpdateTextMeshPro();
+        BindButton();
     }
 
     private void FindTextMeshPro()
@@ -35,12 +42,33 @@ public class PersistentEnergyBar : MonoBehaviour
 
         if (textMeshProButtonObject != null)
         {
-            textPersian = textMeshProButtonObject.GetComponent<TextMeshProUGUI>();
-            UpdateTextMeshPro();
+            textMeshProButton = textMeshProButtonObject.GetComponent<TextMeshProUGUI>();
         }
         else
         {
             Debug.LogWarning("TextMeshPro GameObject not found by name in the current scene");
+        }
+    }
+
+    private void BindButton()
+    {
+        GameObject targetButtonObject = GameObject.Find(targetButtonName);
+
+        if (targetButtonObject != null)
+        {
+            Button targetButton = targetButtonObject.GetComponent<Button>();
+            if (targetButton != null)
+            {
+                targetButton.onClick.AddListener(ReduceEnergy);
+            }
+            else
+            {
+                Debug.LogWarning("Button component not found on the specified GameObject.");
+            }
+        }
+        else
+        {
+            Debug.LogWarning("Target button GameObject not found by name in the current scene.");
         }
     }
 
@@ -83,9 +111,9 @@ public class PersistentEnergyBar : MonoBehaviour
 
     private void UpdateTextMeshPro()
     {
-        if (textPersian != null)
+        if (textMeshProButton != null)
         {
-            textPersian.text = $"Energy: {Mathf.RoundToInt(currentEnergy * 100)}%";
+            textMeshProButton.text = $"Energy: {currentEnergy * 100:F2}%";
         }
     }
 

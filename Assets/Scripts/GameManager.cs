@@ -8,10 +8,12 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private string coinTextObjectName = "CoinText";
     [SerializeField] private string scoreTextObjectName = "ScoreText";
+    [SerializeField] private string totalCoinTextObjectName = "TotalCoin"; // 新增的TextMeshPro对象名
     [SerializeField] private string totalCoinsPrefKey = "TotalCoins";
 
     private TMP_Text coinText;
     private TMP_Text scoreText;
+    private TMP_Text totalCoinText; // 用于显示总金币数的TextMeshPro对象
 
     public int currentLevel = 1;
 
@@ -28,6 +30,9 @@ public class GameManager : MonoBehaviour
             SceneManager.sceneLoaded += OnSceneLoaded;
 
             totalCoins = PlayerPrefs.GetInt(totalCoinsPrefKey, 0);
+
+            FindUIElements();
+            UpdateUIText();
         }
         else
         {
@@ -47,19 +52,47 @@ public class GameManager : MonoBehaviour
     {
         Time.timeScale = 1;
 
+        FindUIElements();
+        UpdateUIText();
+    }
+
+    private void FindUIElements()
+    {
         GameObject coinTextObject = GameObject.Find(coinTextObjectName);
         GameObject scoreTextObject = GameObject.Find(scoreTextObjectName);
+        GameObject totalCoinTextObject = GameObject.Find(totalCoinTextObjectName);
 
         if (coinTextObject != null)
         {
             coinText = coinTextObject.GetComponent<TMP_Text>();
-            coinText.text = coin.ToString();
         }
 
         if (scoreTextObject != null)
         {
             scoreText = scoreTextObject.GetComponent<TMP_Text>();
+        }
+
+        if (totalCoinTextObject != null)
+        {
+            totalCoinText = totalCoinTextObject.GetComponent<TMP_Text>();
+        }
+    }
+
+    private void UpdateUIText()
+    {
+        if (coinText != null)
+        {
+            coinText.text = coin.ToString();
+        }
+
+        if (scoreText != null)
+        {
             scoreText.text = score.ToString();
+        }
+
+        if (totalCoinText != null)
+        {
+            totalCoinText.text = totalCoins.ToString();
         }
     }
 
@@ -73,10 +106,7 @@ public class GameManager : MonoBehaviour
         coin += amount;
         totalCoins += amount;
 
-        if (coinText != null)
-        {
-            coinText.text = coin.ToString();
-        }
+        UpdateUIText();
 
         PlayerPrefs.SetInt(totalCoinsPrefKey, totalCoins);
         PlayerPrefs.Save();
