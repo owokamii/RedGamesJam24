@@ -31,7 +31,7 @@ public class Draggable : MonoBehaviour
                 velocity.y = 0;
                 isGrounded = true;
             }
-            else if(transform.position.y >= groundY)
+            else if (transform.position.y >= groundY)
             {
                 isGrounded = false;
             }
@@ -59,5 +59,9 @@ public class Draggable : MonoBehaviour
     {
         animator.SetBool("IsDragged", false);
         isDragged = false;
+        if (transform.position.y <= groundY)
+        {
+            isGrounded = true; // Ensure isGrounded is reset when dragging stops
+        }
     }
 }
