@@ -132,6 +132,12 @@ public class GameManager : MonoBehaviour
 
         PlayerPrefs.SetInt(totalCoinsPrefKey, totalCoins);
         PlayerPrefs.Save();
+
+        UIManager uiManager = FindObjectOfType<UIManager>();
+        if (uiManager != null)
+        {
+            uiManager.UpdateUI();
+        }
     }
 
     public void AddScore(int amount)
@@ -139,12 +145,7 @@ public class GameManager : MonoBehaviour
         score += amount;
         Debug.Log("AddScore: score = " + score); // 添加调试信息
 
-        //if (scoreText != null)
-        //{
-        //    scoreText.text = score.ToString();
-            UpdateUIText();
-        //}
-        
+        UpdateUIText();
         CheckAndSetHighScore();
     }
 
@@ -156,7 +157,7 @@ public class GameManager : MonoBehaviour
             PlayerPrefs.SetInt(highScorePrefKey, highScore);
             PlayerPrefs.Save();
 
-            Debug.Log("New High Score: " + highScore); // 添加调试信息
+            Debug.Log("New High Score: " + highScore);
         }
     }
 
@@ -165,8 +166,18 @@ public class GameManager : MonoBehaviour
         return totalCoins;
     }
 
-    public int GetHighScore() // 新增
+    public int GetHighScore()
     {
         return highScore;
+    }
+
+    public int GetScore()
+    {
+        return score;
+    }
+
+    public int GetCoins()
+    {
+        return coin;
     }
 }

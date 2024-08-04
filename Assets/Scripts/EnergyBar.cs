@@ -65,8 +65,6 @@ public class EnergyBar : MonoBehaviour
 
         UpdateTextMeshPro();
 
-        PlayerPrefs.SetFloat("CurrentEnergy", currentEnergy);
-        PlayerPrefs.SetString("LastSaveTime", DateTime.Now.ToString());
     }
 
     private void RestoreEnergyFromLastSession()
