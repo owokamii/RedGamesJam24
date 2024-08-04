@@ -532,6 +532,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2103628280}
     m_Modifications:
+    - target: {fileID: 2209466923452082994, guid: 28515b63e84090841ae2a4ebd745eea0, type: 3}
+      propertyPath: m_SortingOrder
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 4962100318538037434, guid: 28515b63e84090841ae2a4ebd745eea0, type: 3}
       propertyPath: m_Name
       value: Square_7
@@ -613,6 +617,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2103628280}
     m_Modifications:
+    - target: {fileID: 2209466923452082994, guid: 28515b63e84090841ae2a4ebd745eea0, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 4962100318538037434, guid: 28515b63e84090841ae2a4ebd745eea0, type: 3}
       propertyPath: m_Name
       value: Square_2
@@ -674,6 +682,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2103628280}
     m_Modifications:
+    - target: {fileID: 2209466923452082994, guid: 28515b63e84090841ae2a4ebd745eea0, type: 3}
+      propertyPath: m_SortingOrder
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 4962100318538037434, guid: 28515b63e84090841ae2a4ebd745eea0, type: 3}
       propertyPath: m_Name
       value: Square_5
@@ -1029,6 +1041,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2103628280}
     m_Modifications:
+    - target: {fileID: 2209466923452082994, guid: 28515b63e84090841ae2a4ebd745eea0, type: 3}
+      propertyPath: m_SortingOrder
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 4962100318538037434, guid: 28515b63e84090841ae2a4ebd745eea0, type: 3}
       propertyPath: m_Name
       value: Square_4
@@ -1772,6 +1788,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2103628280}
     m_Modifications:
+    - target: {fileID: 2209466923452082994, guid: 28515b63e84090841ae2a4ebd745eea0, type: 3}
+      propertyPath: m_SortingOrder
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 4962100318538037434, guid: 28515b63e84090841ae2a4ebd745eea0, type: 3}
       propertyPath: m_Name
       value: Square_6
@@ -2051,6 +2071,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2103628280}
     m_Modifications:
+    - target: {fileID: 2209466923452082994, guid: 28515b63e84090841ae2a4ebd745eea0, type: 3}
+      propertyPath: m_SortingOrder
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 4962100318538037434, guid: 28515b63e84090841ae2a4ebd745eea0, type: 3}
       propertyPath: m_Name
       value: Square_3
@@ -2326,6 +2350,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2103628280}
     m_Modifications:
+    - target: {fileID: 2209466923452082994, guid: 28515b63e84090841ae2a4ebd745eea0, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 4962100318538037434, guid: 28515b63e84090841ae2a4ebd745eea0, type: 3}
       propertyPath: m_Name
       value: Square_1
