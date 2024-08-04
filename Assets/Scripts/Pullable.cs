@@ -16,6 +16,7 @@ public class Pullable : MonoBehaviour
     public bool isDestroyed;
     private bool hasScored;
 
+    private SpriteRenderer spriteRenderer;
     private Animator animator;
     private GrowthStages growthStages;
     private AnimationChanger animationChanger;
@@ -34,6 +35,7 @@ public class Pullable : MonoBehaviour
         randomSpawner = FindObjectOfType<RandomSpawner>();
         animator = GetComponent<Animator>();
         growthStages = GetComponent<GrowthStages>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
 
         spawnPointIndex = GetSpawnPointIndex();
 
@@ -44,9 +46,9 @@ public class Pullable : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log(isBeingDragged);
         if (isMoving)
         {
+            isBeingDragged = false;
             MoveObject();
 
             if (Vector3.Distance(transform.position, targetTransform.position) < 0.01f)
@@ -66,7 +68,8 @@ public class Pullable : MonoBehaviour
 
     private void OnMouseDrag()
     {
-        StretchObject();
+        if (isMoving) return;
+            StretchObject();
     }
 
     private void OnMouseUp()
@@ -95,6 +98,8 @@ public class Pullable : MonoBehaviour
 
             if (newScale.y >= initialScale.y * maxStretchScale)
             {
+                spriteRenderer.sortingLayerName = "Default";
+                capsuleCollider.enabled = false;
                 FindObjectOfType<AudioManager>().PlaySFX("POP");
                 isMoving = true;
                 capsuleCollider.enabled = false;
@@ -123,7 +128,7 @@ public class Pullable : MonoBehaviour
     {
         transform.localScale -= Vector3.one * shrinkSpeed * Time.deltaTime;
 
-        if (transform.localScale.x < 0 || transform.localScale.y < 0 || transform.localScale.z < 0)
+        if (transform.localScale.x <= 0 || transform.localScale.y < 0 || transform.localScale.z < 0)
         {
             DestroyAndReset();
         }

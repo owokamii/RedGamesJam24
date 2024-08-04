@@ -46,4 +46,9 @@ public class RotateObject : MonoBehaviour
 
         transform.localScale = targetScale;
     }
+
+    public void DestroySelf()
+    {
+        Destroy(gameObject);
+    }
 }
