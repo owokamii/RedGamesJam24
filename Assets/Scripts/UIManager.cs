@@ -7,8 +7,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI scoreText;
     [SerializeField] private TextMeshProUGUI coinText;
     [SerializeField] private TextMeshProUGUI highScoreText;
-    [SerializeField] private Image[] stars; // Star images, set these in the inspector
-    [SerializeField] private int[] targetScores = { 100, 200, 300 }; // Set these in the inspector
+    [SerializeField] private Image[] stars;
+    [SerializeField] private int[] targetScores = { 100, 200, 300 };
 
     private void Start()
     {
@@ -50,13 +50,15 @@ public class UIManager : MonoBehaviour
     {
         for (int i = 0; i < stars.Length; i++)
         {
-            if (i < targetScores.Length && score >= targetScores[i])
+            stars[i].gameObject.SetActive(false);
+        }
+
+        for (int i = targetScores.Length - 1; i >= 0; i--)
+        {
+            if (score >= targetScores[i])
             {
                 stars[i].gameObject.SetActive(true);
-            }
-            else
-            {
-                stars[i].gameObject.SetActive(false);
+                break;
             }
         }
     }
