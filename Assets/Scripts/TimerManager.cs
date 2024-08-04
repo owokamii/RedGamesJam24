@@ -7,7 +7,7 @@ public class TimerManager : MonoBehaviour
 {
     public float countdownTime = 40f;
     public TextMeshProUGUI countdownText;
-    public Button actionButton;
+    public GameObject Panel;
     public string sceneToLoad;
 
     private float currentTime;
@@ -16,7 +16,7 @@ public class TimerManager : MonoBehaviour
     private void Start()
     {
         currentTime = countdownTime;
-        actionButton.gameObject.SetActive(false);
+        Panel.gameObject.SetActive(false);
     }
 
     private void Update()
@@ -38,7 +38,7 @@ public class TimerManager : MonoBehaviour
     private void OnTimerEnd()
     {
         Time.timeScale = 0;
-        actionButton.gameObject.SetActive(true);
+        Panel.gameObject.SetActive(true);
     }
 
     private void DisplayTime(float timeToDisplay)
@@ -53,7 +53,7 @@ public class TimerManager : MonoBehaviour
         Time.timeScale = 1;
         timerRunning = true;
         currentTime = countdownTime;
-        actionButton.gameObject.SetActive(false);
+        Panel.gameObject.SetActive(false);
         SceneManager.LoadScene("Home");
     }
 
@@ -79,6 +79,6 @@ public class TimerManager : MonoBehaviour
     {
         currentTime = countdownTime;
         timerRunning = true;
-        actionButton.gameObject.SetActive(false);
+        Panel.gameObject.SetActive(false);
     }
 }

@@ -8,18 +8,22 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private string coinTextObjectName = "CoinText";
     [SerializeField] private string scoreTextObjectName = "ScoreText";
-    [SerializeField] private string totalCoinTextObjectName = "TotalCoin"; // 新增的TextMeshPro对象名
+    [SerializeField] private string totalCoinTextObjectName = "TotalCoin";
+    [SerializeField] private string highScoreTextObjectName = "HighScoreText"; // 新增
     [SerializeField] private string totalCoinsPrefKey = "TotalCoins";
+    [SerializeField] private string highScorePrefKey = "HighScore"; // 新增
 
     private TMP_Text coinText;
     private TMP_Text scoreText;
-    private TMP_Text totalCoinText; // 用于显示总金币数的TextMeshPro对象
+    private TMP_Text totalCoinText;
+    private TMP_Text highScoreText; // 新增
 
     public int currentLevel = 1;
 
     private int coin;
     private int score;
     private int totalCoins;
+    private int highScore; // 新增
 
     private void Awake()
     {
@@ -30,6 +34,7 @@ public class GameManager : MonoBehaviour
             SceneManager.sceneLoaded += OnSceneLoaded;
 
             totalCoins = PlayerPrefs.GetInt(totalCoinsPrefKey, 0);
+            highScore = PlayerPrefs.GetInt(highScorePrefKey, 0); // 获取保存的最高分数
 
             FindUIElements();
             UpdateUIText();
@@ -61,6 +66,7 @@ public class GameManager : MonoBehaviour
         GameObject coinTextObject = GameObject.Find(coinTextObjectName);
         GameObject scoreTextObject = GameObject.Find(scoreTextObjectName);
         GameObject totalCoinTextObject = GameObject.Find(totalCoinTextObjectName);
+        GameObject highScoreTextObject = GameObject.Find(highScoreTextObjectName); // 新增
 
         if (coinTextObject != null)
         {
@@ -75,6 +81,11 @@ public class GameManager : MonoBehaviour
         if (totalCoinTextObject != null)
         {
             totalCoinText = totalCoinTextObject.GetComponent<TMP_Text>();
+        }
+
+        if (highScoreTextObject != null)
+        {
+            highScoreText = highScoreTextObject.GetComponent<TMP_Text>();
         }
     }
 
@@ -94,6 +105,11 @@ public class GameManager : MonoBehaviour
         {
             totalCoinText.text = totalCoins.ToString();
         }
+
+        if (highScoreText != null)
+        {
+            highScoreText.text = highScore.ToString();
+        }
     }
 
     public int GetCurrentLevel()
@@ -111,6 +127,7 @@ public class GameManager : MonoBehaviour
         coin += amount;
         totalCoins += amount;
 
+        Debug.Log("AddMoney: coin = " + coin + ", totalCoins = " + totalCoins);
         UpdateUIText();
 
         PlayerPrefs.SetInt(totalCoinsPrefKey, totalCoins);
@@ -120,14 +137,36 @@ public class GameManager : MonoBehaviour
     public void AddScore(int amount)
     {
         score += amount;
-        if (scoreText != null)
+        Debug.Log("AddScore: score = " + score); // 添加调试信息
+
+        //if (scoreText != null)
+        //{
+        //    scoreText.text = score.ToString();
+            UpdateUIText();
+        //}
+        
+        CheckAndSetHighScore();
+    }
+
+    private void CheckAndSetHighScore()
+    {
+        if (score > highScore)
         {
-            scoreText.text = score.ToString();
+            highScore = score;
+            PlayerPrefs.SetInt(highScorePrefKey, highScore);
+            PlayerPrefs.Save();
+
+            Debug.Log("New High Score: " + highScore); // 添加调试信息
         }
     }
 
     public int GetTotalCoins()
     {
         return totalCoins;
+    }
+
+    public int GetHighScore() // 新增
+    {
+        return highScore;
     }
 }

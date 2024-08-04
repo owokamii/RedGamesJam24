@@ -261,7 +261,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   countdownTime: 10
   countdownText: {fileID: 184135105}
-  actionButton: {fileID: 1141073329}
+  Panel: {fileID: 0}
   sceneToLoad: 
 --- !u!114 &184135105
 MonoBehaviour:
@@ -1456,7 +1456,7 @@ GameObject:
   - component: {fileID: 826768620}
   - component: {fileID: 826768619}
   m_Layer: 5
-  m_Name: Score
+  m_Name: ScoreHeader
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
