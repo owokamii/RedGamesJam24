@@ -9,6 +9,7 @@ public class AI : MonoBehaviour
     [SerializeField] private float minIdleTime = 0.5f;
     [SerializeField] private float maxIdleTime = 1.5f;
     [SerializeField] private Animator animator; // Reference to the Animator component
+    [SerializeField] private bool canMove;
 
     private Draggable draggable;
     private Vector2 direction;
@@ -37,27 +38,36 @@ public class AI : MonoBehaviour
     {
         if (draggable.isGrounded)
         {
-            if (isMoving)
+            if (canMove)
             {
-                MoveInDirection();
-            }
-            else
-            {
-                // Check if idle time is over to start moving again
-                if (idleTime <= 0)
+                if (isMoving)
                 {
-                    ChooseNewDirection();
+                    MoveInDirection();
                 }
                 else
                 {
-                    idleTime -= Time.deltaTime; // Decrease idleTime when AI is idle
+                    // Check if idle time is over to start moving again
+                    if (idleTime <= 0)
+                    {
+                        ChooseNewDirection();
+                    }
+                    else
+                    {
+                        idleTime -= Time.deltaTime; // Decrease idleTime when AI is idle
+                    }
                 }
+            }
+            else
+            {
+                isMoving = false;  // Stop moving when not grounded
+                animator.SetBool("IsWalking", false); // Stop the walking animation
             }
         }
         else
         {
-            isMoving = false;  // Stop moving when not grounded
-            animator.SetBool("IsWalking", false); // Stop the walking animation
+            // Ensure AI plays idle animation while falling
+            isMoving = false;
+            animator.SetBool("IsWalking", false);
         }
     }
 

@@ -29,12 +29,12 @@ public class TutorialManager : MonoBehaviour
         if(PlayerPrefs.GetInt("TutorialCompleted", 0) == 1)
         {
             // tutorial already completed, skip tutorial
-            SkipTutorial(); // go to level 1
+            Invoke("SkipTutorial", 1.0f); // go to level 1
             Debug.Log("skip tutorial");
         }
         else
         {
-            ShowTutorial(); // go to pre-level 1
+            Invoke("ShowTutorial", 1.0f); // go to pre-level 1
             Debug.Log("show tutorial");
         }
     }

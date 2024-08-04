@@ -23,4 +23,9 @@ public class PauseMenu : MonoBehaviour
     {
         SceneManager.LoadSceneAsync("Home");
     }
+
+    public void NextLevel()
+    {
+        SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().buildIndex + 1);
+    }
 }
