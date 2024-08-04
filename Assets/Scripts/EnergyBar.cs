@@ -1,7 +1,6 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 using System;
 
 public class EnergyBar : MonoBehaviour
