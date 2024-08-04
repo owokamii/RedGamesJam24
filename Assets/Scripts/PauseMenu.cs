@@ -3,8 +3,8 @@ using UnityEngine.SceneManagement;
 
 public class PauseMenu : MonoBehaviour
 {
-    [SerializeField] private RotateObject ro1;
-    [SerializeField] private RotateObject ro2;
+    [SerializeField] private GameObject shop;
+    [SerializeField] private GameObject gift;
 
     public void PauseButton()
     {
@@ -33,9 +33,13 @@ public class PauseMenu : MonoBehaviour
         SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().buildIndex + 1);
     }
 
-    public void DisableScript()
+    public void DisableShopRotate()
     {
-        ro1.enabled = false;
-        ro2.enabled = false;
+        //shop.;
+    }
+
+    public void DisableGiftRotate()
+    {
+        //shop.SetActive(false);
     }
 }
