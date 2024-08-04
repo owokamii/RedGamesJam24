@@ -34,7 +34,7 @@ public class GameManager : MonoBehaviour
             SceneManager.sceneLoaded += OnSceneLoaded;
 
             totalCoins = PlayerPrefs.GetInt(totalCoinsPrefKey, 0);
-            highScore = PlayerPrefs.GetInt(highScorePrefKey, 0); // 获取保存的最高分数
+            highScore = PlayerPrefs.GetInt(highScorePrefKey, 0);
 
             FindUIElements();
             UpdateUIText();
@@ -58,6 +58,7 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1;
 
         FindUIElements();
+        ResetScoreAndCoins();
         UpdateUIText();
     }
 
@@ -66,7 +67,7 @@ public class GameManager : MonoBehaviour
         GameObject coinTextObject = GameObject.Find(coinTextObjectName);
         GameObject scoreTextObject = GameObject.Find(scoreTextObjectName);
         GameObject totalCoinTextObject = GameObject.Find(totalCoinTextObjectName);
-        GameObject highScoreTextObject = GameObject.Find(highScoreTextObjectName); // 新增
+        GameObject highScoreTextObject = GameObject.Find(highScoreTextObjectName);
 
         if (coinTextObject != null)
         {
@@ -179,5 +180,16 @@ public class GameManager : MonoBehaviour
     public int GetCoins()
     {
         return coin;
+    }
+
+    private void ResetScoreAndCoins()
+    {
+        score = 0;
+        coin = 0;
+    }
+
+    public void RestartGame()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }
