@@ -5,6 +5,8 @@ public class TutorialManager : MonoBehaviour
 {
     public static TutorialManager Instance;
 
+    [SerializeField] private TimerManager timerManager;
+
     bool playedTutorial = false;
 
     private void Awake()
@@ -28,10 +30,12 @@ public class TutorialManager : MonoBehaviour
         {
             // tutorial already completed, skip tutorial
             SkipTutorial(); // go to level 1
+            Debug.Log("skip tutorial");
         }
         else
         {
             ShowTutorial(); // go to pre-level 1
+            Debug.Log("show tutorial");
         }
     }
 
@@ -41,7 +45,13 @@ public class TutorialManager : MonoBehaviour
     }
 
     private void ShowTutorial()
-    {
+    {             // pause the game temporarily
         SceneManager.LoadScene("Level1.5");
+        Time.timeScale = 0.0f;
+    }
+
+    public void CloseTutorial()
+    {
+        timerManager.enabled = true;
     }
 }
