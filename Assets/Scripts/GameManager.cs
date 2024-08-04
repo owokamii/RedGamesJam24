@@ -9,21 +9,21 @@ public class GameManager : MonoBehaviour
     [SerializeField] private string coinTextObjectName = "CoinText";
     [SerializeField] private string scoreTextObjectName = "ScoreText";
     [SerializeField] private string totalCoinTextObjectName = "TotalCoin";
-    [SerializeField] private string highScoreTextObjectName = "HighScoreText"; // 新增
+    [SerializeField] private string highScoreTextObjectName = "HighScoreText";
     [SerializeField] private string totalCoinsPrefKey = "TotalCoins";
-    [SerializeField] private string highScorePrefKey = "HighScore"; // 新增
+    [SerializeField] private string highScorePrefKey = "HighScore";
 
     private TMP_Text coinText;
     private TMP_Text scoreText;
     private TMP_Text totalCoinText;
-    private TMP_Text highScoreText; // 新增
+    private TMP_Text highScoreText;
 
     public int currentLevel = 1;
 
     private int coin;
     private int score;
     private int totalCoins;
-    private int highScore; // 新增
+    private int highScore;
 
     private void Awake()
     {
@@ -143,7 +143,7 @@ public class GameManager : MonoBehaviour
     public void AddScore(int amount)
     {
         score += amount;
-        Debug.Log("AddScore: score = " + score); // 添加调试信息
+        Debug.Log("AddScore: score = " + score);
 
         UpdateUIText();
         CheckAndSetHighScore();
