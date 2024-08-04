@@ -140,7 +140,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &19547039
 RectTransform:
   m_ObjectHideFlags: 0
@@ -441,7 +441,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b3f870e1868f2d4ab2db51bacabf04e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  countdownTime: 50
+  countdownTime: 10
   countdownText: {fileID: 184135105}
   Panel: {fileID: 1074609061}
   sceneToLoad: 
@@ -696,6 +696,7 @@ GameObject:
   - component: {fileID: 303366140}
   - component: {fileID: 303366142}
   - component: {fileID: 303366141}
+  - component: {fileID: 303366143}
   m_Layer: 5
   m_Name: Star_3
   m_TagString: Untagged
@@ -760,6 +761,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 303366139}
   m_CullTransparentMesh: 1
+--- !u!114 &303366143
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 303366139}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1acc449362adc9a4b92af36828b058cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bounceDuration: 0.5
+  bounceScale: 1.2
 --- !u!1 &385324854
 GameObject:
   m_ObjectHideFlags: 0
@@ -1644,6 +1659,7 @@ GameObject:
   - component: {fileID: 800755409}
   - component: {fileID: 800755411}
   - component: {fileID: 800755410}
+  - component: {fileID: 800755412}
   m_Layer: 5
   m_Name: Star_2
   m_TagString: Untagged
@@ -1708,6 +1724,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 800755408}
   m_CullTransparentMesh: 1
+--- !u!114 &800755412
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 800755408}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1acc449362adc9a4b92af36828b058cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bounceDuration: 0.5
+  bounceScale: 1.2
 --- !u!1 &812264180
 GameObject:
   m_ObjectHideFlags: 0
@@ -1725,7 +1755,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &812264181
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2581,6 +2611,7 @@ GameObject:
   - component: {fileID: 1159206589}
   - component: {fileID: 1159206591}
   - component: {fileID: 1159206590}
+  - component: {fileID: 1159206592}
   m_Layer: 5
   m_Name: Star_1
   m_TagString: Untagged
@@ -2645,6 +2676,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1159206588}
   m_CullTransparentMesh: 1
+--- !u!114 &1159206592
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1159206588}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1acc449362adc9a4b92af36828b058cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bounceDuration: 0.5
+  bounceScale: 1.2
 --- !u!1 &1187117117 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4962100318538037434, guid: 28515b63e84090841ae2a4ebd745eea0, type: 3}
