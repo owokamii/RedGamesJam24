@@ -3,44 +3,44 @@ using UnityEngine;
 
 public class RotateObject : MonoBehaviour
 {
-    public Vector3 squashScale = new Vector3(1.2f, 0.8f, 1.0f); // Scale when squashed
-    public Vector3 stretchScale = new Vector3(0.8f, 1.2f, 1.0f); // Scale when stretched
-    public float duration = 0.5f; // Duration of one squash or stretch cycle
+    [SerializeField] private float squashAmount = 0.2f; // How much to squash/stretch
+    [SerializeField] private float squashDuration = 0.5f; // Duration of one squash/stretch cycle
 
     private Vector3 originalScale;
 
     private void Start()
     {
-        originalScale = transform.localScale; // Store the original scale
-        StartCoroutine(SquashAndStretchRoutine());
+        originalScale = transform.localScale;
+        StartCoroutine(SquashAndStretch());
     }
 
-    private IEnumerator SquashAndStretchRoutine()
+    private IEnumerator SquashAndStretch()
     {
         while (true)
         {
             // Squash
-            yield return ScaleTo(squashScale);
+            yield return StartCoroutine(AnimateScale(new Vector3(originalScale.x + squashAmount, originalScale.y - squashAmount, originalScale.z), squashDuration / 2));
+
+            // Return to normal
+            yield return StartCoroutine(AnimateScale(originalScale, squashDuration / 2));
 
             // Stretch
-            yield return ScaleTo(stretchScale);
+            yield return StartCoroutine(AnimateScale(new Vector3(originalScale.x - squashAmount, originalScale.y + squashAmount, originalScale.z), squashDuration / 2));
 
-            // Return to original scale
-            yield return ScaleTo(originalScale);
+            // Return to normal
+            yield return StartCoroutine(AnimateScale(originalScale, squashDuration / 2));
         }
     }
 
-    private IEnumerator ScaleTo(Vector3 targetScale)
+    private IEnumerator AnimateScale(Vector3 targetScale, float duration)
     {
-        Vector3 startScale = transform.localScale;
-        float elapsedTime = 0f;
+        Vector3 initialScale = transform.localScale;
+        float elapsed = 0f;
 
-        while (elapsedTime < duration)
+        while (elapsed < duration)
         {
-            float t = elapsedTime / duration;
-            t = Mathf.SmoothStep(0f, 1f, t); // Easing function for smooth transition
-            transform.localScale = Vector3.Lerp(startScale, targetScale, t);
-            elapsedTime += Time.deltaTime;
+            transform.localScale = Vector3.Lerp(initialScale, targetScale, elapsed / duration);
+            elapsed += Time.deltaTime;
             yield return null;
         }
 

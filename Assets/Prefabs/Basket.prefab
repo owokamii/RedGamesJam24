@@ -71,7 +71,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1041935323
-  m_SortingLayer: -4
+  m_SortingLayer: -2
   m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 2e1026b91cb7dc84e85b0bb384434109, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -156,7 +156,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1041935323
-  m_SortingLayer: -4
+  m_SortingLayer: -2
   m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 0e0d7be1ed647354f8719711b5c4f829, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -181,9 +181,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33251e5ca3c95874ebe619aab20a399d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  squashScale: {x: 1.2, y: 0.8, z: 1}
-  stretchScale: {x: 0.8, y: 1.2, z: 1}
-  duration: 1
+  squashAmount: 0.1
+  squashDuration: 0.4
 --- !u!1 &8754913867255487565
 GameObject:
   m_ObjectHideFlags: 0
