@@ -12,18 +12,6 @@ EditorBuildSettings:
     path: Assets/Scenes/Home.unity
     guid: 2421d1f7e0f01a44091a7515cd51e90f
   - enabled: 1
-    path: Assets/Scenes/LevelSelection.unity
-    guid: d0588c50ff517ef40b22601f914828bc
-  - enabled: 1
-    path: Assets/Scenes/Nursery.unity
-    guid: 0e2ca80715a13054999b70de697567f6
-  - enabled: 1
-    path: Assets/Scenes/Collection.unity
-    guid: e41c2df00e441fd4f8f30d5bbe9c45ce
-  - enabled: 1
-    path: Assets/Scenes/Yvonne.unity
-    guid: 8c9cfa26abfee488c85f1582747f6a02
-  - enabled: 1
     path: Assets/Scenes/Level1.unity
     guid: 992ca59a4f741664aa8370c31ca5eb4f
   - enabled: 1
