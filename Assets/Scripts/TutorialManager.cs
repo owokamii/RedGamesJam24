@@ -36,6 +36,7 @@ public class TutorialManager : MonoBehaviour
         {
             Invoke("ShowTutorial", 1.0f); // go to pre-level 1
             Debug.Log("show tutorial");
+            
         }
     }
 
@@ -53,5 +54,7 @@ public class TutorialManager : MonoBehaviour
     public void CloseTutorial()
     {
         timerManager.enabled = true;
+        // i want to save here
+        SaveBool("TutorialCompleted", true);
     }
 }
