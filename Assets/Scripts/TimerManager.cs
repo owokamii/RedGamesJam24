@@ -5,10 +5,10 @@ using UnityEngine.UI;
 
 public class TimerManager : MonoBehaviour
 {
-    public float countdownTime = 10f;
+    public float countdownTime = 40f;
     public TextMeshProUGUI countdownText;
     public Button actionButton;
-    public string sceneToLoad; // 设置要加载的场景名称
+    public string sceneToLoad;
 
     private float currentTime;
     private bool timerRunning = true;

@@ -5,9 +5,8 @@ using UnityEngine.UI;
 public class SceneLoader : MonoBehaviour
 {
     public Button buttonToHide;
-    public GameObject Level1;
-    public GameObject Level2;
-    public GameObject Level3;
+    public GameObject Panel;
+    public GameObject ButtonClose;
 
     public void LoadScene(string name)
     {
@@ -28,19 +27,17 @@ public class SceneLoader : MonoBehaviour
             buttonToHide.gameObject.SetActive(false);
         }
 
-        if (object1 != null)
+        if (Panel != null)
         {
-            object1.SetActive(true);
+            Panel.SetActive(true);
         }
+    }
 
-        if (object2 != null)
+    public void closePanel()
+    {
+        if (ButtonClose != null)
         {
-            object2.SetActive(true);
-        }
-
-        if (object3 != null)
-        {
-            object3.SetActive(true);
+            ButtonClose.SetActive(false);
         }
     }
 }

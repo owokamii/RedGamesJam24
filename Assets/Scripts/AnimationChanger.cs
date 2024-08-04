@@ -7,6 +7,7 @@ public class AnimationChanger : MonoBehaviour
     private Dictionary<GameObject, Coroutine> activeCoroutines = new Dictionary<GameObject, Coroutine>();
     private RandomSpawner randomSpawner;
     private bool IsColliderEnter = false;
+    private bool canSpawn = true;
 
     void Start()
     {
@@ -43,7 +44,7 @@ public class AnimationChanger : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("SpawnedObject"))
+        if (other.CompareTag("SpawnedObject") && canSpawn)
         {
             Pullable pullableComponent = other.GetComponent<Pullable>();
             GrowthStages growthStages = other.GetComponent<GrowthStages>();
@@ -136,6 +137,7 @@ public class AnimationChanger : MonoBehaviour
                     Destroy(obj);
                     activeCoroutines.Remove(obj);
                     randomSpawner.ResetSpawnPoint(spawnPointIndex);
+                    StartCoroutine(AllowSpawnAfterDelay());
                     yield break;
                 }
             }
@@ -175,6 +177,7 @@ public class AnimationChanger : MonoBehaviour
                 Destroy(obj);
                 activeCoroutines.Remove(obj);
                 randomSpawner.ResetSpawnPoint(spawnPointIndex);
+                StartCoroutine(AllowSpawnAfterDelay());
             }
         }
     }
@@ -200,5 +203,12 @@ public class AnimationChanger : MonoBehaviour
     public void ResumeAnimation(Animator animator)
     {
         animator.speed = 1;
+    }
+
+    public IEnumerator AllowSpawnAfterDelay()
+    {
+        canSpawn = false;
+        yield return new WaitForSeconds(1f);
+        canSpawn = true;
     }
 }
