@@ -5,14 +5,11 @@ using UnityEngine;
 public class AnimationChanger : MonoBehaviour
 {
     private Dictionary<GameObject, Coroutine> activeCoroutines = new Dictionary<GameObject, Coroutine>();
-    private LayerDetector layerDetector;
     private RandomSpawner randomSpawner;
     private bool IsColliderEnter = false;
-    private bool canSpawn = true;
 
     void Start()
     {
-        layerDetector = GetComponent<LayerDetector>();
         randomSpawner = FindObjectOfType<RandomSpawner>();
         if (randomSpawner == null)
         {
@@ -46,14 +43,8 @@ public class AnimationChanger : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("SpawnedObject") && canSpawn)
+        if (other.CompareTag("SpawnedObject"))
         {
-            SpriteRenderer spriteRenderer = other.GetComponent<SpriteRenderer>();
-            if (spriteRenderer != null)
-            {
-                spriteRenderer.sortingOrder = layerDetector.GetSoilFrontLayer - 1;
-            }
-
             Pullable pullableComponent = other.GetComponent<Pullable>();
             GrowthStages growthStages = other.GetComponent<GrowthStages>();
             if (pullableComponent != null && growthStages != null)
@@ -136,7 +127,7 @@ public class AnimationChanger : MonoBehaviour
             int currentStage1 = growthStages.GetCurrentStage();
             if (currentStage1 == 2)
             {
-                yield return new WaitForSeconds(0.4f);
+                yield return new WaitForSeconds(1.0f);
 
                 int spawnPointIndex = GetSpawnPointIndex(obj);
                 if (spawnPointIndex != -1 && randomSpawner != null)
@@ -145,7 +136,6 @@ public class AnimationChanger : MonoBehaviour
                     Destroy(obj);
                     activeCoroutines.Remove(obj);
                     randomSpawner.ResetSpawnPoint(spawnPointIndex);
-                    StartCoroutine(AllowSpawnAfterDelay());
                     yield break;
                 }
             }
@@ -185,7 +175,6 @@ public class AnimationChanger : MonoBehaviour
                 Destroy(obj);
                 activeCoroutines.Remove(obj);
                 randomSpawner.ResetSpawnPoint(spawnPointIndex);
-                StartCoroutine(AllowSpawnAfterDelay());
             }
         }
     }
@@ -211,12 +200,5 @@ public class AnimationChanger : MonoBehaviour
     public void ResumeAnimation(Animator animator)
     {
         animator.speed = 1;
-    }
-
-    public IEnumerator AllowSpawnAfterDelay()
-    {
-        canSpawn = false;
-        yield return new WaitForSeconds(1f);
-        canSpawn = true;
     }
 }

@@ -136,10 +136,6 @@ public class Pullable : MonoBehaviour
             randomSpawner.ResetSpawnPoint(spawnPointIndex);
         }
         Destroy(gameObject);
-        if (animationChanger != null)
-        {
-            StartCoroutine(animationChanger.AllowSpawnAfterDelay());
-        }
     }
 
     private int GetSpawnPointIndex()
