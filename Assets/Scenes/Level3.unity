@@ -349,7 +349,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b3f870e1868f2d4ab2db51bacabf04e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  countdownTime: 10
+  countdownTime: 30
   countdownText: {fileID: 184135105}
   Panel: {fileID: 1523574138}
   sceneToLoad: 
