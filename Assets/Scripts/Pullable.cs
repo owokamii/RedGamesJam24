@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class Pullable : MonoBehaviour
@@ -134,6 +135,7 @@ public class Pullable : MonoBehaviour
         {
             animationChanger.CheckingColliderEnter();
             randomSpawner.ResetSpawnPoint(spawnPointIndex);
+            StartCoroutine(WaitAndAllowSpawn());
         }
         Destroy(gameObject);
     }
@@ -155,6 +157,12 @@ public class Pullable : MonoBehaviour
             }
         }
         return -1;
+    }
+
+    private IEnumerator WaitAndAllowSpawn()
+    {
+        yield return new WaitForSeconds(0.5f);
+        randomSpawner.ResetSpawnPoint(spawnPointIndex);
     }
 
     public void CheckAnimationStatus()

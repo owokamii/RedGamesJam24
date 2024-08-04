@@ -7,12 +7,11 @@ using System;
 public class EnergyBar : MonoBehaviour
 {
     public string textMeshProButtonName = "Text";
-    public string targetButtonName = "Button_Level";
     private TextMeshProUGUI textMeshProButton;
     private float currentEnergy;
-    private const float energyDrain = 0.5f;
+    private const float energyDrain = 0.3f;
     private const float energyRegenRate = 0.1f;
-    private const float regenInterval = 10f;
+    private const float regenInterval = 50f;
 
     private void Awake()
     {
@@ -25,15 +24,12 @@ public class EnergyBar : MonoBehaviour
         FindTextMeshPro();
         UpdateTextMeshPro();
         InvokeRepeating("RegenerateEnergy", regenInterval, regenInterval);
-
-        BindButton();
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         FindTextMeshPro();
         UpdateTextMeshPro();
-        BindButton();
     }
 
     private void FindTextMeshPro()
@@ -46,29 +42,7 @@ public class EnergyBar : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("TextMeshPro GameObject not found by name in the current scene");
-        }
-    }
-
-    private void BindButton()
-    {
-        GameObject targetButtonObject = GameObject.Find(targetButtonName);
-
-        if (targetButtonObject != null)
-        {
-            Button targetButton = targetButtonObject.GetComponent<Button>();
-            if (targetButton != null)
-            {
-                targetButton.onClick.AddListener(ReduceEnergy);
-            }
-            else
-            {
-                Debug.LogWarning("Button component not found on the specified GameObject.");
-            }
-        }
-        else
-        {
-            Debug.LogWarning("Target button GameObject not found by name in the current scene.");
+            Debug.Log("TextMeshPro GameObject not found by name in the current scene");
         }
     }
 
@@ -121,5 +95,10 @@ public class EnergyBar : MonoBehaviour
     {
         PlayerPrefs.SetFloat("CurrentEnergy", currentEnergy);
         PlayerPrefs.SetString("LastSaveTime", DateTime.Now.ToString());
+    }
+
+    public float GetCurrentEnergy()
+    {
+        return currentEnergy;
     }
 }
