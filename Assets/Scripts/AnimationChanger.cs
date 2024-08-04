@@ -5,12 +5,14 @@ using UnityEngine;
 public class AnimationChanger : MonoBehaviour
 {
     private Dictionary<GameObject, Coroutine> activeCoroutines = new Dictionary<GameObject, Coroutine>();
+    private LayerDetector layerDetector;
     private RandomSpawner randomSpawner;
     private bool IsColliderEnter = false;
     private bool canSpawn = true;
 
     void Start()
     {
+        layerDetector = GetComponent<LayerDetector>();
         randomSpawner = FindObjectOfType<RandomSpawner>();
         if (randomSpawner == null)
         {
@@ -46,6 +48,12 @@ public class AnimationChanger : MonoBehaviour
     {
         if (other.CompareTag("SpawnedObject") && canSpawn)
         {
+            SpriteRenderer spriteRenderer = other.GetComponent<SpriteRenderer>();
+            if (spriteRenderer != null)
+            {
+                spriteRenderer.sortingOrder = layerDetector.GetSoilFrontLayer - 1;
+            }
+
             Pullable pullableComponent = other.GetComponent<Pullable>();
             GrowthStages growthStages = other.GetComponent<GrowthStages>();
             if (pullableComponent != null && growthStages != null)

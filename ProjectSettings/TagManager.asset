@@ -44,13 +44,7 @@ TagManager:
   - name: Background
     uniqueID: 3253031973
     locked: 0
-  - name: SoilBack
-    uniqueID: 2234711827
-    locked: 0
-  - name: Plants
-    uniqueID: 1674865875
-    locked: 0
-  - name: SoilFront
+  - name: Plant
     uniqueID: 380319093
     locked: 0
   - name: Default
