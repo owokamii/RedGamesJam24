@@ -108,9 +108,10 @@ MonoBehaviour:
   isMoving: 0
   isBeingDragged: 0
   isDestroyed: 0
-  currentSpriteIndex: 0
+  animationStages: []
+  currentAnimationStageIndex: 0
   remainingDestroyTime: -1
-  hasChangedSprite: 0
+  hasChangedState: 0
 --- !u!70 &6426457894651490749
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -143,8 +144,8 @@ CapsuleCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_Size: {x: 3.12, y: 5.12}
+  m_Offset: {x: 0, y: -0.20513335}
+  m_Size: {x: 4.499985, y: 7.5070024}
   m_Direction: 0
 --- !u!50 &-2381192861267241263
 Rigidbody2D:
@@ -206,3 +207,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04896ff0e9a7c564cb50e26601d9f0d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hasChangedState: 0
